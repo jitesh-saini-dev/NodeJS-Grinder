@@ -22,6 +22,7 @@ const itemsdata = new Schema({
 
 const ProductModel = mongoose.model("items", itemsdata);
 
+//alldata
 app.get("/", async (req, res) => {
   try {
     const result = await ProductModel.find();
@@ -56,10 +57,33 @@ app.get("/items/:id", async (req, res) => {
   }
 });
 
+//title
+app.get("/items/title/:title", async (req, res) => {
+  try {
+    const title = req.params.title;
+
+    const result = await ProductModel.find({ title });
+
+    if (!result) {
+      return res.status(404).json({
+        message: "no record found",
+      });
+    }
+    res.status(200).json(result);
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
 //category
-app.get("/items/:category", async (req, res) => {
+app.get("/items/category/:category", async (req, res) => {
   try {
     const category = req.params.category;
+
     const result = await ProductModel.find({ category });
 
     if (!result) {

@@ -17,10 +17,20 @@ export const fetchUserById = createAsyncThunk(
   },
 );
 
-export const fetchUserByCategory = createAsyncThunk(
-  "products/productsdetailsById",
-  async (id) => {
-    const res = await axios.get(`http://localhost:3000/items/${category}`);
+export const fetchByCategory = createAsyncThunk(
+  "products/fetchByCategory",
+  async (category) => {
+    const res = await axios.get(
+      `http://localhost:3000/items/category/${category}`,
+    );
+    return res.data;
+  },
+);
+
+export const fetchByTitle = createAsyncThunk(
+  "products/fetchByTitle",
+  async (title) => {
+    const res = await axios.get(`http://localhost:3000/items/title/${title}`);
     return res.data;
   },
 );
@@ -31,6 +41,8 @@ const productSlice = createSlice({
     data: [],
     loading: false,
     singledata: {},
+    titledata: {},
+    categoryData: [],
   },
   reducers: {
     clearSingleData: (state) => {
@@ -61,9 +73,32 @@ const productSlice = createSlice({
       .addCase(fetchUserById.rejected, (state) => {
         state.loading = false;
       });
+
+    builder
+      .addCase(fetchByTitle.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchByTitle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.titledata = action.payload;
+      })
+      .addCase(fetchByTitle.rejected, (state) => {
+        state.loading = false;
+      });
+
+    builder
+      .addCase(fetchByCategory.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchByCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categoryData = action.payload;
+      })
+      .addCase(fetchByCategory.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
-
 
 export const { clearSingleData } = productSlice.actions;
 export default productSlice.reducer;
