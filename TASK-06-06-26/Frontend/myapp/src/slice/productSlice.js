@@ -17,6 +17,14 @@ export const fetchUserById = createAsyncThunk(
   },
 );
 
+export const fetchByTitle = createAsyncThunk(
+  "products/fetchByTitle",
+  async (title) => {
+    const res = await axios.get(`http://localhost:3000/items/title/${title}`);
+    return res.data;
+  },
+);
+
 export const fetchByCategory = createAsyncThunk(
   "products/fetchByCategory",
   async (category) => {
@@ -27,10 +35,12 @@ export const fetchByCategory = createAsyncThunk(
   },
 );
 
-export const fetchByTitle = createAsyncThunk(
-  "products/fetchByTitle",
-  async (title) => {
-    const res = await axios.get(`http://localhost:3000/items/title/${title}`);
+export const fetchByCategoryAndBrand = createAsyncThunk(
+  "products/fetchByCategoryAndBrand",
+  async ({ category, brand }) => {
+    const res = await axios.get(
+      `http://localhost:3000/catandbrand?category=${category}&brand=${brand}`,
+    );
     return res.data;
   },
 );
@@ -41,8 +51,9 @@ const productSlice = createSlice({
     data: [],
     loading: false,
     singledata: {},
-    titledata: {},
+    titledata: [],
     categoryData: [],
+    CategoryAndBrandData: [],
   },
   reducers: {
     clearSingleData: (state) => {
@@ -50,6 +61,7 @@ const productSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // alldata
     builder
       .addCase(fetchdata.pending, (state) => {
         state.loading = true;
@@ -62,6 +74,7 @@ const productSlice = createSlice({
         state.loading = false;
       });
 
+    //byID
     builder
       .addCase(fetchUserById.pending, (state) => {
         state.loading = true;
@@ -74,6 +87,7 @@ const productSlice = createSlice({
         state.loading = false;
       });
 
+    //by Title
     builder
       .addCase(fetchByTitle.pending, (state) => {
         state.loading = true;
@@ -86,6 +100,7 @@ const productSlice = createSlice({
         state.loading = false;
       });
 
+    //by Category
     builder
       .addCase(fetchByCategory.pending, (state) => {
         state.loading = true;
@@ -95,6 +110,19 @@ const productSlice = createSlice({
         state.categoryData = action.payload;
       })
       .addCase(fetchByCategory.rejected, (state) => {
+        state.loading = false;
+      });
+
+    //by Category + brand
+    builder
+      .addCase(fetchByCategoryAndBrand.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchByCategoryAndBrand.fulfilled, (state, action) => {
+        state.loading = false;
+        state.CategoryAndBrandData = action.payload;
+      })
+      .addCase(fetchByCategoryAndBrand.rejected, (state) => {
         state.loading = false;
       });
   },

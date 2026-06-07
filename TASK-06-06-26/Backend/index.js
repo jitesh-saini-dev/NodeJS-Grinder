@@ -101,6 +101,26 @@ app.get("/items/category/:category", async (req, res) => {
   }
 });
 
+//category + brand
+app.get("/catandbrand", async (req, res) => {
+  try {
+    const { category, brand } = req.query;
+
+    const result = await ProductModel.find({
+      category,
+      brand,
+    });
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
 app.listen(3000, () => {
   console.log("server running on port 3000...");
 });
