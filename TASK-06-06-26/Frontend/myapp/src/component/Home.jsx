@@ -128,19 +128,19 @@ const Home = () => {
                           className="px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition"
                           onClick={() => dispatch(fetchUserById(x.id))}
                         >
-                          ID
+                          ViewBy ID
                         </button>
                         <button
                           className="px-3 py-1.5 text-xs font-medium bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition"
                           onClick={() => dispatch(fetchByTitle(x.title))}
                         >
-                          Title
+                          ViewBy Title
                         </button>
                         <button
                           className="px-3 py-1.5 text-xs font-medium bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition"
                           onClick={() => dispatch(fetchByCategory(x.category))}
                         >
-                          Category
+                          ViewBy Category
                         </button>
                         <button
                           className="px-3 py-1.5 text-xs font-medium bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100 transition"
@@ -153,7 +153,7 @@ const Home = () => {
                             )
                           }
                         >
-                          Cat + Brand
+                          ViewBy Category + Brand
                         </button>
                       </div>
                     </td>
@@ -163,7 +163,7 @@ const Home = () => {
             </table>
             {sorteddata.length === 0 && (
               <div className="p-10 text-center text-slate-500">
-                Koi product nahi mila bhai, try a different search.
+                no product found
               </div>
             )}
           </div>
