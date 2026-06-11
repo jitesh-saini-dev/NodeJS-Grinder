@@ -27,7 +27,7 @@ const Header = () => {
             to="/bin"
             className="px-4 py-2 rounded-xl text-m font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
           >
-            <i class="ri-delete-bin-5-fill"></i>
+            <img src="https://images.icon-icons.com/1914/PNG/512/throwtopaperbin_121547.png" alt=""  className="w-6 h-6" />
           </Link>
         </div>
       </div>

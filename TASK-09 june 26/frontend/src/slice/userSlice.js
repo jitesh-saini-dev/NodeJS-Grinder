@@ -172,10 +172,16 @@ export const fetchInactiveData = createAsyncThunk(
 );
 
 // 5. Restore User (status: true karke home bhejega)
-export const restoreUser = createAsyncThunk("users/restoreUser", async (id) => {
-  await axios.patch("http://localhost:3000/users", { _id: id, status: true });
-  return id;
-});
+export const restoreUser = createAsyncThunk(
+  "users/restoreUser",
+  async (_id) => {
+    await axios.patch("http://localhost:3000/users", {
+      _id,
+      status: true,
+    });
+    return _id;
+  },
+);
 
 // 6. Permanent Delete User (DB se hamesha ke liye gayab)
 export const permanentDeleteUser = createAsyncThunk(

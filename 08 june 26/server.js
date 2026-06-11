@@ -3,67 +3,144 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const app = express();
-// app.use(cors());
+app.use(cors());
+app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("server is running...");
+// ================= DB CONNECT =================
+mongoose
+  .connect("mongodb://localhost:27017/BMI")
+  .then(() => console.log("Database Connected"))
+  .catch((err) => console.log(err));
+
+// ================= SCHEMA =================
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  age: Number,
+  gender: String,
+  height: Number,
+  weight: Number,
 });
 
-//timepass class solu
-app.get("/add", (req, res) => {
-  const a = parseInt(req.query.a);
-  const b = parseInt(req.query.b);
-  const c = req.query.c;
-  if (!c) {
-    return res.status(404).json({
-      message: "no record found",
+const User = mongoose.model("bmiuser", userSchema);
+
+// ================= CREATE USER =================
+
+app.post("/metric", async (req, res) => {
+  try {
+    const { name, email, age, gender, hight, weight } = req.body;
+
+    if (!name || !email || !gender || !age || !hight || !weight) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
+    const existing = await User.findOne({ email });
+
+    if (existing) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    const result = await User.create(req.body);
+
+    res.status(200).json({
+      message: "User created successfully",
+      data: result,
     });
-  }
-
-  if (c === "+" || c === " ") {
-    return res.json(a + b);
-  }
-  if (c === "-") {
-    return res.json(a - b);
-  }
-  if (c === "*") {
-    return res.json(a * b);
-  }
-  if (c === "/") {
-    return res.json(a / b);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-app.get("/abc", cors(), (req, res) => {
-  const data = [1, 2, 3, 4, 5, 6];
+// // ================= GET USERS (ACTIVE ONLY) =================
+// app.get("/users", async (req, res) => {
+//   try {
+//     const users = await User.find({ isDeleted: false }).sort({
+//       _id: -1,
+//     });
 
-  const c = req.query.c;
-  if (!c) {
-    return res.status(404).json({
-      message: "no record found",
-    });
-  }
+//     res.json(users);
+//   } catch (err) {
+//     res.status(500).json({ message: "Error fetching users" });
+//   }
+// });
 
-  if (c === "even") {
-    const ans = data.filter((x) => x % 2 === 0);
-    return res.json(ans);
-  }
+// // ================= UPDATE USER =================
+// app.patch("/users/:id", async (req, res) => {
+//   try {
+//     const result = await User.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true }
+//     );
 
-  if (c === "odd") {
-    const ans = data.filter((x) => x % 2 !== 0);
-    return res.json(ans);
-  }
+//     res.json(result);
+//   } catch (err) {
+//     res.status(500).json({ message: "Update error" });
+//   }
+// });
 
-  if (c === "sum") {
-    const ans = data.reduce((acc, x) => acc + x, 0);
-    return res.json(ans);
-  }
-  if (c === "product") {
-    const ans = data.reduce((acc, x) => acc * x, 1);
-    return res.json(ans);
-  }
+// // ================= DELETE (SOFT DELETE - RECYCLER BIN) =================
+// app.delete("/users/:id", async (req, res) => {
+//   try {
+//     await User.findByIdAndUpdate(req.params.id, {
+//       isDeleted: true,
+//     });
+
+//     res.json({ message: "Moved to Recycle Bin 🗑️" });
+//   } catch (err) {
+//     res.status(500).json({ message: "Delete error" });
+//   }
+// });
+
+// // ================= GET RECYCLE BIN =================
+// app.get("/trash", async (req, res) => {
+//   try {
+//     const deletedUsers = await User.find({ isDeleted: true });
+//     res.json(deletedUsers);
+//   } catch (err) {
+//     res.status(500).json({ message: "Trash error" });
+//   }
+// });
+
+// // ================= RESTORE USER =================
+// app.patch("/restore/:id", async (req, res) => {
+//   try {
+//     await User.findByIdAndUpdate(req.params.id, {
+//       isDeleted: false,
+//     });
+
+//     res.json({ message: "User restored ♻️" });
+//   } catch (err) {
+//     res.status(500).json({ message: "Restore error" });
+//   }
+// });
+
+// // ================= permanent delet  USER =================
+
+// app.delete("/trash/:id", async (req, res) => {
+//   await User.findByIdAndDelete(req.params.id);
+//   res.json({ message: "Deleted permanently" });
+// });
+
+app.get("/metric", async (req, res) => {
+  console.log(`>>>>>`, req.body);
+
+  const hight = req.body.h;
+  console.log(hight);
+
+  const hightmeter = hight / 100;
+  console.log(hightmeter);
+
+  const weight = req.body.w;
+  console.log(weight);
+
+  const BMI = weight / (hightmeter * hightmeter);
+  console.log(BMI);
+
+  return res.status(200).json(BMI);
 });
 
+// ================= SERVER =================
 app.listen(5000, () => {
-  console.log("server is running at port 5000");
+  console.log(`Server running on port 5000`);
 });

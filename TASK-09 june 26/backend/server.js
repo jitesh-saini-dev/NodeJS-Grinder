@@ -120,6 +120,7 @@ app.post("/users", async (req, res) => {
 //   }
 // });
 
+//Home pe vhi dikhane h jiska status : true ho...
 app.get("/users", async (req, res) => {
   try {
     const users = await userModel.find({ status: true });
@@ -217,7 +218,7 @@ app.patch("/users", async (req, res) => {
 });
 
 // app.patch("/users", async (req, res) => {
-//   try {      
+//   try {
 //     const { id } = req.query;
 //     const data = req.body;
 

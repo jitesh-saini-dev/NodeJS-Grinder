@@ -37,7 +37,7 @@ const Bin = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full table-fixed bg-white shadow-lg rounded-xl overflow-hidden">
-            <thead className="bg-gradient-to-r from-red-600 via-orange-500 to-red-500 text-white">
+            <thead className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white">
               <tr className="text-center text-sm font-semibold tracking-wide">
                 <th className="p-4 w-1/6">ID</th>
                 <th className="p-4 w-1/5">Name</th>
