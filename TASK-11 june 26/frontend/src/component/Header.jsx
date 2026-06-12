@@ -24,7 +24,7 @@ const Header = () => {
           >
             BMI Users
           </Link>
-             <Link
+          <Link
             to="/bin"
             className="px-5 py-2 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 text-white font-medium shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
           >

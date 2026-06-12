@@ -12,8 +12,6 @@ const App = () => {
         <Route path="/" element={<Form />} />
         <Route path="/bmiusers" element={<BmiUsers />} />
         <Route path="/bin" element={<Bin />} />
-
-
       </Routes>
     </BrowserRouter>
   );
