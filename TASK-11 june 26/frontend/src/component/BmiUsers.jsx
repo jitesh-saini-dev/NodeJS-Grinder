@@ -4,6 +4,7 @@ import axios from "axios";
 const BmiUsers = () => {
   const [datas, setDatas] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [editselected, setEditselected] = useState(null);
 
   async function fetchData() {
     try {
@@ -47,7 +48,7 @@ const BmiUsers = () => {
 
   const handleEdit = (id) => {
     const user = datas.find((x) => x._id === id);
-    setSelected(user);
+    setEditselected(user);
   };
 
   return (
@@ -120,12 +121,12 @@ const BmiUsers = () => {
         </div>
       )}
 
-      {selected && (
+      {editselected && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white w-[420px] rounded-2xl shadow-2xl p-6 relative animate-[fadeIn_0.2s_ease-in]">
             {/* Close Button */}
             <button
-              onClick={() => setSelected(null)}
+              onClick={() => setEditselected(null)}
               className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-red-500"
             >
               ×
@@ -140,18 +141,18 @@ const BmiUsers = () => {
             <div className="space-y-3">
               <input
                 className="w-full border p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
-                value={selected.name}
+                value={editselected.name}
                 onChange={(e) =>
-                  setSelected({ ...selected, name: e.target.value })
+                  setEditselected({ ...editselected, name: e.target.value })
                 }
                 placeholder="Name"
               />
 
               <input
                 className="w-full border p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
-                value={selected.email}
+                value={editselected.email}
                 onChange={(e) =>
-                  setSelected({ ...selected, email: e.target.value })
+                  setEditselected({ ...editselected, email: e.target.value })
                 }
                 placeholder="Email"
               />
@@ -159,18 +160,18 @@ const BmiUsers = () => {
               <input
                 type="number"
                 className="w-full border p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
-                value={selected.age}
+                value={editselected.age}
                 onChange={(e) =>
-                  setSelected({ ...selected, age: e.target.value })
+                  setEditselected({ ...editselected, age: e.target.value })
                 }
                 placeholder="Age"
               />
 
               <input
                 className="w-full border p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
-                value={selected.gender}
+                value={editselected.gender}
                 onChange={(e) =>
-                  setSelected({ ...selected, gender: e.target.value })
+                  setEditselected({ ...editselected, gender: e.target.value })
                 }
                 placeholder="Gender"
               />
@@ -181,11 +182,11 @@ const BmiUsers = () => {
               onClick={async () => {
                 try {
                   await axios.patch(
-                    `http://localhost:3000/metric/${selected._id}`,
-                    selected,
+                    `http://localhost:3000/metric/${editselected._id}`,
+                    editselected,
                   );
 
-                  setSelected(null);
+                  setEditselected(null);
                   fetchData();
                 } catch (err) {
                   console.log(err);
