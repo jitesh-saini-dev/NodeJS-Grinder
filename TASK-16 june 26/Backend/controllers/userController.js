@@ -48,10 +48,7 @@ const signup = async (req, res) => {
     const savedData = new authModel(req.body);
     const result = await savedData.save();
 
-    return res.status(201).json({
-      message: "User created successfully",
-      result,
-    });
+    return res.status(201).json(result);
   } catch (error) {
     return res.status(500).json({
       message: error.message,
@@ -59,35 +56,54 @@ const signup = async (req, res) => {
   }
 };
 
-// LOGIN USER (SIGNIN)
-const signin = async (req, res) => {
+//SignUp getData
+const getSignup = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const result = await authModel.find();
 
-    const result = await authModel.findOne({ email });
-
-    if (!result) {
+    if (result.length === 0) {
       return res.status(404).json({
-        message: "Email not found",
+        message: "No Users Found",
       });
     }
 
-    if (result.password !== password) {
-      return res.status(400).json({
-        message: "Wrong Password",
-      });
-    }
-
-    return res.status(200).json({
-      message: "Login Successfully",
-      result,
-    });
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({
       message: error.message,
     });
   }
 };
+
+// // LOGIN USER (SIGNIN)
+// const signin = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     const result = await authModel.findOne({ email });
+
+//     if (!result) {
+//       return res.status(404).json({
+//         message: "Email not found",
+//       });
+//     }
+
+//     if (result.password !== password) {
+//       return res.status(400).json({
+//         message: "Wrong Password",
+//       });
+//     }
+
+//     return res.status(200).json({
+//       message: "Login Successfully",
+//       result,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
 
 // GET ALL ACTIVE USERS
 const getUsers = async (req, res) => {
@@ -233,7 +249,9 @@ const restoreUser = async (req, res) => {
 module.exports = {
   signup,
 
-  signin,
+  getSignup,
+
+  // signin,
 
   getUsers,
 

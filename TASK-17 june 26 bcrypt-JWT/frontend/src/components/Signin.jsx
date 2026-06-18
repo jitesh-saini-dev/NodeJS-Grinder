@@ -26,55 +26,32 @@ const Signin = () => {
     }
 
     try {
-      const response = await axios.get(
-        "http://localhost:3000/user/getSignupUser",
+      const result = await axios.post(
+        "http://localhost:3000/user/signin",
+        form,
       );
 
-      const users = response.data;
-      console.log(users);
+      console.log(result.data);
 
-      if (Object.keys(errorObj).length > 0) {
-        setError(errorObj);
-        return;
-      }
+      localStorage.setItem("token", result.data.token);
 
-      setError({});
+      alert(result.data.message);
 
-      // console.log(form.email,form.password);
-      const user = users.find(
-        (item) => item.email === form.email && item.password === form.password,
-      );
-
-      console.log(user);
-
-      console.log("Form:", form);
-      console.log("Users:", users);
-
-      users.forEach((item) => {
-        console.log({
-          dbEmail: item.email,
-          formEmail: form.email,
-          emailMatch: item.email === form.email,
-
-          dbPassword: item.password,
-          formPassword: form.password,
-          passwordMatch: item.password === form.password,
-        });
-      });
-
-      if (!user) {
-        setError({
-          email: "Invalid Email or Password",
-        });
-        return;
-      }
-
-      localStorage.setItem("token", true);
-
-      alert("Login Successfully");
       navigate("/");
-    } catch (error) {
-      console.log(">>>>>>>>error", error);
+    } catch (err) {
+      const msg = err.response.data.message;
+
+      if (msg === "Email not found") {
+        setError({
+          email: msg,
+        });
+      }
+
+      if (msg === "Login Password Incorrect") {
+        setError({
+          password: msg,
+        });
+      }
     }
   };
 
@@ -134,8 +111,16 @@ const Signin = () => {
           </div>
 
           <button
+            type="button"
+            onClick={() => navigate("/forgotpass")}
+            className="text-blue-600 text-sm mt-2 hover:underline cursor-pointer "
+          >
+            Forgot Password?
+          </button>
+
+          <button
             type="submit"
-            className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg"
+            className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg  cursor-pointer"
           >
             Login
           </button>

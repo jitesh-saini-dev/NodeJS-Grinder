@@ -15,10 +15,6 @@ const authSchema = new mongoose.Schema({
     type: Number,
   },
 
-  gender: {
-    type: String,
-  },
-
   phone: {
     type: String,
   },

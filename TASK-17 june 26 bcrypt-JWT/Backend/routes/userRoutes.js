@@ -11,7 +11,7 @@ router.post("/posting", userController.signup);
 router.get("/getSignupUser", userController.getSignup);
 
 // Login User (Signin)
-// router.post("/signin", userController.signin);
+router.post("/signin", userController.signin);
 
 // Get All Users
 router.get("/getting", userController.getUsers);
@@ -33,5 +33,14 @@ router.get("/inactive-users", userController.getInactiveUsers);
 
 //Restore
 router.patch("/restore", userController.restoreUser);
+
+//forgot password
+router.patch("/forgot", userController.forgotpass);
+
+
+//reset password
+router.patch("/resetPassword", userController.resetPassword);
+
+
 
 module.exports = router;

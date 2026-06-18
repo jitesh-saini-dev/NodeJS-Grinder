@@ -10,7 +10,7 @@ const Signup = () => {
     password: "",
     age: "",
     phone: "",
-    city: "",
+    address: "",
     state: "",
     country: "",
   });
@@ -30,7 +30,7 @@ const Signup = () => {
     if (form.password === "") errorobj.password = "Password is required";
     if (form.age === "") errorobj.age = "Age is required";
     if (form.phone === "") errorobj.phone = "Phone no. is required";
-    if (form.city === "") errorobj.city = "City is required";
+    if (form.address === "") errorobj.address = "address is required";
     if (form.state === "") errorobj.state = "State is required";
     if (form.country === "") errorobj.country = "Country is required";
 
@@ -52,7 +52,7 @@ const Signup = () => {
             password: "",
             age: "",
             phone: "",
-            city: "",
+            address: "",
             state: "",
             country: "",
           });
@@ -175,17 +175,17 @@ const Signup = () => {
               )}
             </div>
 
-            {/* City */}
+            {/* address */}
             <div>
               <input
                 type="text"
                 placeholder="City"
-                value={form.city}
-                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
                 className="w-full px-5 py-4 rounded-2xl border outline-none"
               />
 
-              {error.city && (
+              {error.address && (
                 <p className="text-red-500 text-sm">{error.city}</p>
               )}
             </div>
