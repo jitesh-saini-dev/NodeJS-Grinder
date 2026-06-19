@@ -13,7 +13,7 @@ const signup = async (req, res) => {
       lastName,
       age,
       phone,
-      email,
+      email, 
       password,
       address,
       state,
@@ -438,7 +438,7 @@ module.exports = {
   signin,
 
   forgotpass,
-  
+
   resetPassword,
 
   getUsers,
