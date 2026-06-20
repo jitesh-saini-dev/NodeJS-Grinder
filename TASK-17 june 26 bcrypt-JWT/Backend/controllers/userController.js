@@ -13,7 +13,7 @@ const signup = async (req, res) => {
       lastName,
       age,
       phone,
-      email, 
+      email,
       password,
       address,
       state,

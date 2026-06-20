@@ -88,7 +88,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     versionKey: false,
   },
-); 
+);
 
 const userModel = mongoose.model("User", userSchema);
 
