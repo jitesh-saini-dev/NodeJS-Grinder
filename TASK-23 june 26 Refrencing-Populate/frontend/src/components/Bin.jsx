@@ -112,9 +112,7 @@ const Bin = () => {
                   <tr key={task._id} className="text-center border-b">
                     <td className="p-3">{task.taskName}</td>
 
-
                     <td className="p-3">{task.status}</td>
-
 
                     <td className="p-3">
                       {task.assignTo?.firstName || "Unassigned"}
