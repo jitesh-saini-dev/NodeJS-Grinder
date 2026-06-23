@@ -11,9 +11,32 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    dueDate: {
+      type: Date,
+      required: true,
+    },
+
+    assignedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "auth",
+      required: true,
+    },
+
+    assignTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "auth",
+      required: true,
+    },
+
     status: {
       type: String,
       default: "pending",
+    },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

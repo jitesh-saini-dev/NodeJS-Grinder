@@ -22,7 +22,7 @@ const authSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      default: "pending",
+      default: "user",
     },
 
     email: {

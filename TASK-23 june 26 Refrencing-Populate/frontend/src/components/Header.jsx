@@ -30,22 +30,12 @@ const Header = () => {
             SignIn
           </Link>
 
-
-           <Link
-            to="/resetpassword"
-            className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
-          >
-            Reset Password
-          </Link>
-
           <Link
-            to="/form"
+            to="/taskdata"
             className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
           >
-            Form
+            Tasks
           </Link>
-
-
 
           <Link
             to="/bin"

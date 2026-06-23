@@ -14,6 +14,35 @@ router.get("/getSignupUser", authMiddleware, taskController.getSignup);
 router.post("/signin", taskController.signin);
 
 //create task
-router.post("/addtasks", taskController.createTask);
+router.post("/addtasks", authMiddleware, taskController.createTask);
+
+//show tasks
+router.get("/getAllTasks", authMiddleware, taskController.getAllTasks);
+
+//show inactive tasks
+router.get(
+  "/getInactiveAllTasks",
+  authMiddleware,
+  taskController.getInactiveAllTasks,
+);
+
+//get taskbyid
+router.get("/viewtask/:id", authMiddleware, taskController.getSingleTask);
+
+//edit task
+router.patch("/edittask/:id", authMiddleware, taskController.updateTask);
+
+//soft delete
+router.patch("/task/soft-delete/:id", taskController.softDeleteTask);
+
+//restore
+router.patch("/restore", authMiddleware, taskController.restoreTask);
+
+//permanent delete
+router.delete(
+  "/permanent-delete",
+  authMiddleware,
+  taskController.permanentDeleteTask,
+);
 
 module.exports = router;

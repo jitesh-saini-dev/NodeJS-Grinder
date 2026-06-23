@@ -5,49 +5,68 @@ import axios from "axios";
 const Bin = () => {
   const navigate = useNavigate();
 
-  const [inactiveUsers, setInactiveUsers] = useState([]);
+  const [inactiveTasks, setInactiveTasks] = useState([]);
 
-  // Fetch Trash Users
-  const fetchInactiveUsers = async () => {
+  // Fetch Inactive Tasks
+  const fetchInactiveTasks = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/user/inactive-users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
-      setInactiveUsers(res.data);
+      const res = await axios.get(
+        "http://localhost:3000/tasks/getInactiveAllTasks",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setInactiveTasks(res.data.data);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    fetchInactiveUsers();
+    fetchInactiveTasks();
   }, []);
 
-  // Restore User
-  const restoreUser = async (id) => {
+  // Restore Task
+  const restoreTask = async (id) => {
     try {
-      await axios.patch("http://localhost:3000/user/restore", {
-        _id: id,
-      });
+      const token = localStorage.getItem("token");
 
-      fetchInactiveUsers();
+      await axios.patch(
+        "http://localhost:3000/tasks/restore",
+        { _id: id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      fetchInactiveTasks();
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Permanent Delete
-  const permanentDeleteUser = async (id) => {
+  // Permanent Delete Task
+  const permanentDeleteTask = async (id) => {
     try {
+      const token = localStorage.getItem("token");
+
       await axios.delete(
-        `http://localhost:3000/user/permanent-delete?_id=${id}`,
+        `http://localhost:3000/tasks/permanent-delete?_id=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
-      fetchInactiveUsers();
+      fetchInactiveTasks();
     } catch (error) {
       console.log(error);
     }
@@ -56,7 +75,7 @@ const Bin = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       {/* Back Button */}
-      <div className="max-w-6xl mx-auto mb-4">
+      <div className="max-w-7xl mx-auto mb-4">
         <button
           onClick={() => navigate(-1)}
           className="px-5 py-2 text-sm font-semibold text-white bg-indigo-500 rounded-xl"
@@ -65,43 +84,45 @@ const Bin = () => {
         </button>
       </div>
 
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-5xl font-bold text-center mb-10">Recycle Bin</h1>
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-5xl font-bold text-center mb-10">
+          Task Recycle Bin
+        </h1>
 
         <div className="overflow-x-auto">
           <table className="w-full bg-white shadow-lg rounded-xl overflow-hidden">
             <thead className="bg-indigo-600 text-white">
               <tr>
-                <th className="p-4">ID</th>
-                <th className="p-4">Name</th>
-                <th className="p-4">Age</th>
-                <th className="p-4">State</th>
-                <th className="p-4">Email</th>
+                <th className="p-4">Title</th>
+                <th className="p-4">Status</th>
+                <th className="p-4">Assigned To</th>
                 <th className="p-4">Action</th>
               </tr>
             </thead>
 
             <tbody>
-              {inactiveUsers.length === 0 ? (
+              {inactiveTasks.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="text-center p-8">
                     Trash is Empty 🗑️
                   </td>
                 </tr>
               ) : (
-                inactiveUsers.map((x) => (
-                  <tr key={x._id} className="text-center border-b">
-                    <td className="p-3">{x._id}</td>
+                inactiveTasks.map((task) => (
+                  <tr key={task._id} className="text-center border-b">
+                    <td className="p-3">{task.taskName}</td>
+
+
+                    <td className="p-3">{task.status}</td>
+
+
                     <td className="p-3">
-                      {x.firstName} {x.lastName}
+                      {task.assignTo?.firstName || "Unassigned"}
                     </td>
-                    <td className="p-3">{x.age}</td>
-                    <td className="p-3">{x.state}</td>
-                    <td className="p-3">{x.email}</td>
 
                     <td className="p-3">
                       <button
-                        onClick={() => restoreUser(x._id)}
+                        onClick={() => restoreTask(task._id)}
                         className="bg-green-500 text-white px-3 py-1 rounded mr-3"
                       >
                         Restore
@@ -109,8 +130,12 @@ const Bin = () => {
 
                       <button
                         onClick={() => {
-                          if (window.confirm("Delete permanently?")) {
-                            permanentDeleteUser(x._id);
+                          if (
+                            window.confirm(
+                              "Are you sure you want to permanently delete this task?",
+                            )
+                          ) {
+                            permanentDeleteTask(task._id);
                           }
                         }}
                         className="bg-red-500 text-white px-3 py-1 rounded"

@@ -17,7 +17,7 @@ const auth = async (req, res, next) => {
     }
 
     const token = authtoken.split(" ")[1];
-    console.log(token)
+    console.log(token);
 
     if (!token) {
       return res.status(400).json({
@@ -26,8 +26,11 @@ const auth = async (req, res, next) => {
     }
 
     const decode = jwt.verify(token, SecretKey);
+    console.log("Decoded Token:", decode);
 
     const { email } = decode;
+
+    console.log("Email From Token:", email);
 
     if (!email) {
       return res.status(400).json({
@@ -36,7 +39,7 @@ const auth = async (req, res, next) => {
     }
 
     const userdetail = await authModel.findOne({ email });
-
+    console.log("User Found:", userdetail);
     if (!userdetail) {
       return res.status(404).json({
         message: "User not found",

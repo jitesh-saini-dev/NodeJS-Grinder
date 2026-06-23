@@ -10,7 +10,7 @@ const ViewDetails = () => {
 
   const getUser = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/user/getting/${id}`);
+      const res = await axios.get(`http://localhost:3000/tasks/getting/${id}`);
 
       setUser(res.data);
     } catch (error) {

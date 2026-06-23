@@ -18,6 +18,7 @@ const signup = async (req, res) => {
       address,
       state,
       country,
+      role,
     } = req.body;
 
     if (
@@ -29,21 +30,14 @@ const signup = async (req, res) => {
       !password ||
       !address ||
       !state ||
-      !country
+      !country ||
+      !role
     ) {
       return res.status(400).json({
         message: "All fields are required",
       });
     }
 
-    //Synchronous
-    // const saltRounds = 10;
-    // const salt = bcrypt.genSaltSync(saltRounds);
-    // console.log(">>>>salt", salt);
-    // const hash = bcrypt.hashSync(password, salt);
-    // console.log(">>>>>hash", hash);
-    //--------------------
-    // //Asynchronous production ready
     const hash = await bcrypt.hash(password, 10);
 
     const data = {
@@ -56,6 +50,7 @@ const signup = async (req, res) => {
       address,
       state,
       country,
+      role,
     };
 
     const savedData = new authModel(data);
@@ -133,26 +128,110 @@ const signin = async (req, res) => {
 //create task
 const createTask = async (req, res) => {
   try {
-    const { taskName, status } = req.body;
+    const { taskName, assignedBy, dueDate, assignTo, status } = req.body;
 
-    const user_id = req.user._id; // middleware se
+    const user_id = req.user._id;
 
-    if (!user_id || !taskName) {
+    if (!taskName || !dueDate || !assignTo) {
       return res.status(400).json({
         success: false,
-        message: "User ID and Task Name are required",
+        message: "Task Name, Due Date and Assign To are required",
       });
     }
 
     const task = await taskModel.create({
       user_id,
+      assignedBy: req.user._id,
+      assignTo,
       taskName,
+      dueDate,
       status,
     });
 
     return res.status(201).json({
-      success: true,
       message: "Task Created Successfully",
+      data: task,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+//getAll active tasks
+const getAllTasks = async (req, res) => {
+  try {
+    let tasks;
+
+    if (req.user.role === "admin") {
+      tasks = await taskModel
+        .find({ isDeleted: false })
+        .populate("user_id")
+        .populate("assignTo");
+    } else {
+      tasks = await taskModel
+        .find({ user_id: req.user._id, isDeleted: false })
+        .populate("user_id")
+        .populate("assignTo");
+    }
+
+    return res.status(200).json({
+      data: tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+//get inactive tasks
+const getInactiveAllTasks = async (req, res) => {
+  try {
+    let tasks;
+
+    if (req.user.role === "admin") {
+      tasks = await taskModel
+        .find({ isDeleted: true })
+        .populate("user_id")
+        .populate("assignTo");
+    } else {
+      tasks = await taskModel
+        .find({ user_id: req.user._id, isDeleted: true })
+        .populate("user_id")
+        .populate("assignTo");
+    }
+
+    return res.status(200).json({
+      data: tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+//get taskByid
+const getSingleTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const task = await taskModel
+      .findById(id)
+      .populate("user_id", "firstName lastName email")
+      .populate("assignTo", "firstName lastName email");
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task Not Found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
       data: task,
     });
   } catch (error) {
@@ -163,8 +242,121 @@ const createTask = async (req, res) => {
   }
 };
 
-//getall tasks
+//edit task
+const updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { taskName, dueDate, assignTo, status } = req.body;
 
+    // Database mein task find karke update kar rahe hain
+    // { new: true } return karega updated document
+    const updatedTask = await taskModel.findByIdAndUpdate(
+      id,
+      {
+        taskName,
+        dueDate,
+        assignTo,
+        status,
+      },
+      { new: true, runValidators: true }, // runValidators schema ke rules check karega
+    );
+
+    // Agar task id se nahi mila
+    if (!updatedTask) {
+      return res.status(404).json({ message: "Task nahi mila bhai!" });
+    }
+
+    // Success response
+    res.status(200).json({
+      message: "Task ekdum badhiya se update ho gaya",
+      data: updatedTask,
+    });
+  } catch (error) {
+    console.log("Task update error:", error);
+    res.status(500).json({
+      message: "Server mein kuch gadbad hai",
+      error: error.message,
+    });
+  }
+};
+
+//soft delete task
+const softDeleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const task = await taskModel.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { new: true },
+    );
+
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task nahi mila bhai!" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Task delete ho gaya (Soft Delete)",
+    });
+  } catch (error) {
+    console.log("Delete Task Error:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+//restore task
+const restoreTask = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    const task = await taskModel.findByIdAndUpdate(
+      _id,
+      { isDeleted: false },
+      { new: true },
+    );
+
+    if (!task) {
+      return res.status(404).json({
+        message: "Task not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Task restored successfully",
+      data: task,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+//permanent task delete
+const permanentDeleteTask = async (req, res) => {
+  try {
+    const { _id } = req.query;
+
+    const task = await taskModel.findByIdAndDelete(_id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: "Task not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Task permanently deleted",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   signup,
@@ -174,4 +366,18 @@ module.exports = {
   signin,
 
   createTask,
+
+  getAllTasks,
+
+  getInactiveAllTasks,
+
+  getSingleTask,
+
+  updateTask,
+
+  softDeleteTask,
+
+  restoreTask,
+
+  permanentDeleteTask,
 };

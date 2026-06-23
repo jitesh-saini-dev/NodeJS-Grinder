@@ -14,15 +14,13 @@ const Home = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("http://localhost:3000/user/getting", {
+      const res = await axios.get("http://localhost:3000/tasks/getSignupUser", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // console.log(res.data);
-
-      setUsers(res.data.data || res.data);
+      setUsers(res.data);
     } catch (error) {
       console.log(error.response?.data);
     }
@@ -33,15 +31,15 @@ const Home = () => {
   }, []);
 
   // Delete User
-  const deleteUser = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/user/delete?_id=${id}`);
+  // const deleteUser = async (id) => {
+  //   try {
+  //     await axios.delete(`http://localhost:3000/user/delete?_id=${id}`);
 
-      fetchUsers();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     fetchUsers();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   // Search
   const filteredData = users.filter(
@@ -85,7 +83,7 @@ const Home = () => {
         </select>
 
         <button
-          onClick={() => navigate("/form")}
+          onClick={() => navigate("/signup")}
           className="bg-blue-600 text-white px-6 rounded-xl"
         >
           + Add User
@@ -95,16 +93,15 @@ const Home = () => {
       <table className="w-full bg-white shadow rounded-xl overflow-hidden">
         <thead className="bg-indigo-600 text-white">
           <tr>
-            <th className="p-4">ID</th>
-
-            <th>Name</th>
-
+            <th className="p-4">First Name</th>
+            <th>Last Name</th>
             <th>Age</th>
-
-            <th>State</th>
-
+            <th>Phone</th>
+            <th>Role</th>
             <th>Email</th>
-
+            <th>Address</th>
+            <th>State</th>
+            <th>Country</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -112,24 +109,30 @@ const Home = () => {
         <tbody>
           {sortedData.length === 0 ? (
             <tr>
-              <td colSpan="6" className="text-center p-5">
+              <td colSpan="10" className="text-center p-5">
                 No Data Found
               </td>
             </tr>
           ) : (
             sortedData.map((x) => (
               <tr key={x._id} className="text-center border-b">
-                <td className="p-3">{x._id}</td>
+                <td>{x.firstName}</td>
 
-                <td>
-                  {x.firstName} {x.lastName}
-                </td>
+                <td>{x.lastName}</td>
 
                 <td>{x.age}</td>
 
-                <td>{x.state}</td>
+                <td>{x.phone}</td>
+
+                <td>{x.role}</td>
 
                 <td>{x.email}</td>
+
+                <td>{x.address}</td>
+
+                <td>{x.state}</td>
+
+                <td>{x.country}</td>
 
                 <td>
                   <button
