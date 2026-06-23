@@ -381,7 +381,7 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser };
+// module.exports = { createUser };
 
 const getUsers = async (req, res) => {
   try {

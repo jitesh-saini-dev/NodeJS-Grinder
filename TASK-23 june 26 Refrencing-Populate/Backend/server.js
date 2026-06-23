@@ -9,12 +9,12 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-const userRoutes = require("./routes/userRoutes");
-app.use("/user", userRoutes);
+const userRoutes = require("./routes/taskRoutes");
+app.use("/tasks", userRoutes);
 
 // MongoDB Connection
 mongoose
-  .connect("mongodb://localhost:27017/NewTestDb")
+  .connect("mongodb://localhost:27017/AllTasks")
   .then(() => {
     console.log("MongoDB Connected");
   })

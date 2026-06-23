@@ -245,52 +245,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// exports.forgotPassword = async (req, res) => {
-//   try {
-//     const { email, password, confirmPassword } = req.body;
-//     if (!email || !password || !confirmPassword) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "All fields are required",
-//       });
-//     }
-//     const user = await singnupuser.findOne({ email });
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Email not found",
-//       });
-//     }
-//     if (password !== confirmPassword) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Password and Confirm Password do not match",
-//       });
-//     }
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     await singnupuser.findByIdAndUpdate(
-//       user._id,
-//       {
-//         password: hashedPassword,
-//       },
-//       { new: true },
-//     );
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Password Updated Successfully",
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error",
-//       error: error.message,
-//     });
-//   }
-// };
-
-// GET ALL ACTIVE USERS
-
+//create user
 const createUser = async (req, res) => {
   try {
     const {
@@ -381,7 +336,7 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser };
+// module.exports = { createUser };
 
 const getUsers = async (req, res) => {
   try {

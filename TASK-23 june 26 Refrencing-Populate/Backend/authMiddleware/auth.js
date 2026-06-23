@@ -7,8 +7,8 @@ const SecretKey =
 const auth = async (req, res, next) => {
   try {
     const authtoken = req.headers.authorization;
-    // console.log(req.headers);
-    // console.log(req.headers.authorization);
+    console.log(req.headers);
+    console.log(req.headers.authorization);
 
     if (!authtoken) {
       return res.status(401).json({
@@ -17,6 +17,7 @@ const auth = async (req, res, next) => {
     }
 
     const token = authtoken.split(" ")[1];
+    console.log(token)
 
     if (!token) {
       return res.status(400).json({
@@ -46,8 +47,10 @@ const auth = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.log(error);
+
     return res.status(401).json({
-      message: "Invalid or expired token",
+      message: error.message,
     });
   }
 };
