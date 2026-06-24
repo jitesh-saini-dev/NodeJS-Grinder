@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
 
-const EditTask = () => {
-  const { id } = useParams();
-
-  const navigate = useNavigate();
-
-  const [users, setUsers] = useState([]);
-
+const TaskForm = () => {
   const [form, setForm] = useState({
     taskName: "",
     dueDate: "",
@@ -16,9 +9,10 @@ const EditTask = () => {
     status: "pending",
   });
 
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
     fetchUsers();
-    fetchTask();
   }, []);
 
   const fetchUsers = async () => {
@@ -33,33 +27,7 @@ const EditTask = () => {
 
       setUsers(res.data);
     } catch (error) {
-      console.log(error.response?.data);
-    }
-  };
-
-  const fetchTask = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await axios.get(
-        `http://localhost:3000/tasks/viewtask/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const task = res.data.data;
-
-      setForm({
-        taskName: task.taskName,
-        dueDate: task.dueDate?.split("T")[0],
-        assignTo: task.assignTo?._id,
-        status: task.status,
-      });
-    } catch (error) {
-      console.log(error.response?.data);
+      console.log(error);
     }
   };
 
@@ -76,24 +44,34 @@ const EditTask = () => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.patch(`http://localhost:3000/tasks/edittask/${id}`, form, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.post(
+        "http://localhost:3000/tasks/addtasks",
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
+      );
+
+      console.log(res.data);
+
+      alert("Task Created Successfully");
+
+      setForm({
+        taskName: "",
+        dueDate: "",
+        assignTo: "",
+        status: "pending",
       });
-
-      alert("Task Updated Successfully");
-
-      navigate("/taskdata");
     } catch (error) {
-      console.log(error);
       console.log(error.response?.data);
     }
   };
 
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white p-6 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-5">Edit Task</h2>
+      <h2 className="text-2xl font-bold mb-5">Create Task</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -128,26 +106,26 @@ const EditTask = () => {
           ))}
         </select>
 
-        <select
+        {/* <select
           name="status"
           value={form.status}
           onChange={handleChange}
           className="w-full border p-3 rounded"
         >
           <option value="pending">Pending</option>
-
+          <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
-        </select>
+        </select> */}
 
         <button
           type="submit"
-          className="w-full bg-green-600 text-white p-3 rounded"
+          className="w-full bg-indigo-600 text-white p-3 rounded"
         >
-          Update Task
+          Create Task
         </button>
       </form>
     </div>
   );
 };
 
-export default EditTask;
+export default TaskForm;

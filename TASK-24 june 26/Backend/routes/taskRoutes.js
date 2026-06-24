@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const authMiddleware = require("../authMiddleware/auth");
+const authMiddleware = require("../Middleware/auth");
 const taskController = require("../controllers/taskController");
 
 // Create User (Signup)
