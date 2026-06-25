@@ -7,6 +7,8 @@ import useViewToggle from "../hooks/useViewToggle";
 import { BsGrid3X3GapFill } from "react-icons/bs";
 import { HiOutlineTableCells } from "react-icons/hi2";
 
+import moment from "moment";
+
 const Home = () => {
   const [search, setSearch] = useState("");
 
@@ -228,9 +230,18 @@ const Home = () => {
                           {task.taskName}
                         </td>
                         <td className="p-4 border-b text-gray-600">
-                          {task.dueDate
-                            ? new Date(task.dueDate).toLocaleDateString()
-                            : "N/A"}
+                          <span
+                            className={`px-3 py-1 rounded-full ${
+                              moment(task.dueDate).isSame(moment(), "day") &&
+                              task.status !== "completed"
+                                ? "bg-yellow-300 text-black font-semibold"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
+                          >
+                            {task.dueDate
+                              ? new Date(task.dueDate).toLocaleDateString()
+                              : "N/A"}
+                          </span>
                         </td>
                         <td className="p-4 border-b">
                           <span
@@ -276,51 +287,80 @@ const Home = () => {
                 {filteredTasks.map((task) => (
                   <div
                     key={task._id}
-                    className="bg-white rounded-xl shadow-lg p-5 border"
+                    className="bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-200 p-6 transition-all duration-300 hover:-translate-y-2"
                   >
-                    <h2 className="text-2xl font-bold mb-4">{task.taskName}</h2>
+                    {/* Task Name */}
+                    <h2 className="text-2xl font-bold text-gray-800 mb-5 border-b pb-3">
+                      {task.taskName}
+                    </h2>
 
-                    <p>
-                      <strong>Assigned To:</strong> {task.assignTo?.firstName}{" "}
-                      {task.assignTo?.lastName}
-                    </p>
+                    {/* Assigned To */}
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="font-semibold text-gray-600">
+                        Assigned To
+                      </span>
 
-                    <p>
-                      <strong>Due Date:</strong>{" "}
-                      {new Date(task.dueDate).toLocaleDateString()}
-                    </p>
+                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                        {task.assignTo?.firstName} {task.assignTo?.lastName}
+                      </span>
+                    </div>
 
-                    <p className="mb-4">
-                      <strong>Status:</strong>{" "}
+                    {/* Due Date */}
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="font-semibold text-gray-600">
+                        Due Date
+                      </span>
+
                       <span
-                        className={`px-2 py-1 rounded text-white ${
-                          task.status === "completed"
-                            ? "bg-green-500"
-                            : "bg-red-500"
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                          moment(task.dueDate).isSame(moment(), "day") &&
+                          task.status !== "completed"
+                            ? "bg-yellow-300 text-yellow-900"
+                            : "bg-gray-100 text-gray-700"
                         }`}
                       >
-                        {task.status}
+                        {new Date(task.dueDate).toLocaleDateString()}
                       </span>
-                    </p>
+                    </div>
 
-                    <div className="flex gap-2 mt-4">
+                    {/* Status */}
+                    <div className="flex justify-between items-center mb-6">
+                      <span className="font-semibold text-gray-600">
+                        Status
+                      </span>
+
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-bold text-white ${
+                          task.status === "completed"
+                            ? "bg-green-500"
+                            : task.status === "in progress"
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
+                        }`}
+                      >
+                        {task.status.toUpperCase()}
+                      </span>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex gap-2">
                       <button
                         onClick={() => navigate(`/viewtask/${task._id}`)}
-                        className="bg-blue-500 text-white px-3 py-2 rounded"
+                        className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl font-semibold transition-all"
                       >
                         View
                       </button>
 
                       <button
                         onClick={() => navigate(`/edittask/${task._id}`)}
-                        className="bg-green-500 text-white px-3 py-2 rounded"
+                        className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-xl font-semibold transition-all"
                       >
                         Edit
                       </button>
 
                       <button
                         onClick={() => handleDelete(task._id)}
-                        className="bg-red-500 text-white px-3 py-2 rounded"
+                        className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl font-semibold transition-all"
                       >
                         Delete
                       </button>
@@ -360,9 +400,18 @@ const Home = () => {
                           {task.taskName}
                         </td>
                         <td className="p-4 border-b text-gray-600">
-                          {task.dueDate
-                            ? new Date(task.dueDate).toLocaleDateString()
-                            : "N/A"}
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              moment(task.dueDate).isSame(moment(), "day") &&
+                              task.status !== "completed"
+                                ? "bg-yellow-300 text-black font-bold"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
+                          >
+                            {task.dueDate
+                              ? new Date(task.dueDate).toLocaleDateString()
+                              : "N/A"}
+                          </span>
                         </td>
                         <td className="p-4 border-b">
                           <span
@@ -385,12 +434,30 @@ const Home = () => {
                           >
                             View
                           </button>
-                          <button
+                          {/* <button
                             onClick={() => navigate(`/edittask/${task._id}`)}
                             className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
                           >
                             Edit
+                          </button> */}
+
+                          {/* CONDITION LAGA DI HAI KI COMPLETED HAI TOH DISABLED RAHEGA */}
+                          <button
+                            onClick={() => {
+                              if (task.status !== "completed") {
+                                navigate(`/edittask/${task._id}`);
+                              }
+                            }}
+                            disabled={task.status === "completed"}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                              task.status === "completed"
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
+                                : "bg-emerald-500 hover:bg-emerald-600 text-white"
+                            }`}
+                          >
+                            Edit
                           </button>
+                          
                           <button
                             onClick={() => handleDelete(task._id)}
                             className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
@@ -407,62 +474,106 @@ const Home = () => {
               // CARD VIEW
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                 {filteredTasks.length === 0 ? (
-                  <div className="col-span-full text-center text-gray-500">
-                    No Data Found!. No tasks assigned yet. Enjoy!
+                  <div className="col-span-full text-center text-gray-500 text-lg font-medium">
+                    No Data Found! No tasks assigned yet. Enjoy 🎉
                   </div>
                 ) : (
                   filteredTasks.map((task) => (
                     <div
                       key={task._id}
-                      className="bg-white rounded-xl shadow-lg p-5 border"
+                      className="bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-200 p-6 transition-all duration-300 hover:-translate-y-2"
                     >
-                      <h2 className="text-2xl font-bold mb-4">
+                      {/* Task Name */}
+                      <h2 className="text-2xl font-bold text-gray-800 mb-5 border-b pb-3">
                         {task.taskName}
                       </h2>
 
-                      <p>
-                        <strong>Assigned By:</strong> {task.user_id?.firstName}{" "}
-                        {task.user_id?.lastName}
-                      </p>
+                      {/* Assigned By */}
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="font-semibold text-gray-600">
+                          Assigned By
+                        </span>
 
-                      <p>
-                        <strong>Due Date:</strong>{" "}
-                        {task.dueDate
-                          ? new Date(task.dueDate).toLocaleDateString()
-                          : "N/A"}
-                      </p>
+                        <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium">
+                          {task.user_id?.firstName} {task.user_id?.lastName}
+                        </span>
+                      </div>
 
-                      <p className="mb-4">
-                        <strong>Status:</strong>{" "}
+                      {/* Due Date */}
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="font-semibold text-gray-600">
+                          Due Date
+                        </span>
+
                         <span
-                          className={`px-2 py-1 rounded text-white ${
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            moment(task.dueDate).isSame(moment(), "day") &&
+                            task.status !== "completed"
+                              ? "bg-yellow-300 text-yellow-900"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {task.dueDate
+                            ? new Date(task.dueDate).toLocaleDateString()
+                            : "N/A"}
+                        </span>
+                      </div>
+
+                      {/* Status */}
+                      <div className="flex justify-between items-center mb-6">
+                        <span className="font-semibold text-gray-600">
+                          Status
+                        </span>
+
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-bold text-white ${
                             task.status === "completed"
                               ? "bg-green-500"
-                              : "bg-red-500"
+                              : task.status === "in progress"
+                                ? "bg-yellow-500"
+                                : "bg-red-500"
                           }`}
                         >
                           {task.status?.toUpperCase()}
                         </span>
-                      </p>
+                      </div>
 
-                      <div className="flex gap-2 mt-4">
+                      {/* Action Buttons */}
+                      <div className="flex gap-2">
                         <button
                           onClick={() => navigate(`/viewtask/${task._id}`)}
-                          className="bg-blue-500 text-white px-3 py-2 rounded"
+                          className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl font-semibold transition-all"
                         >
                           View
                         </button>
 
-                        <button
+                        {/* <button
                           onClick={() => navigate(`/edittask/${task._id}`)}
-                          className="bg-green-500 text-white px-3 py-2 rounded"
+                          className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-xl font-semibold transition-all"
+                        >
+                          Edit
+                        </button> */}
+
+                        {/* SAME CONDITION CARD VIEW KE BUTTON PE */}
+                        <button
+                          onClick={() => {
+                            if (task.status !== "completed") {
+                              navigate(`/edittask/${task._id}`);
+                            }
+                          }}
+                          disabled={task.status === "completed"}
+                          className={`flex-1 py-2 rounded-xl font-semibold transition-all ${
+                            task.status === "completed"
+                              ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
+                              : "bg-emerald-500 hover:bg-emerald-600 text-white"
+                          }`}
                         >
                           Edit
                         </button>
 
                         <button
                           onClick={() => handleDelete(task._id)}
-                          className="bg-red-500 text-white px-3 py-2 rounded"
+                          className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl font-semibold transition-all"
                         >
                           Delete
                         </button>

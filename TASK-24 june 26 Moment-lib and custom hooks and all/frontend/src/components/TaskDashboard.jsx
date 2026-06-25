@@ -7,6 +7,8 @@ import useViewToggle from "../hooks/useViewToggle";
 import { BsGrid3X3GapFill } from "react-icons/bs";
 import { HiOutlineTableCells } from "react-icons/hi2";
 
+import moment from "moment";
+
 const TaskDashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [search, setSearch] = useState("");
@@ -155,7 +157,19 @@ const TaskDashboard = () => {
                     <td className="p-3">{task.assignTo?.firstName}</td>
 
                     <td className="p-3">
-                      {new Date(task.dueDate).toLocaleDateString()}
+                      <span
+                        className={`px-3 py-2 rounded-3xl ${
+                          task.status !== "completed" &&
+                          moment(task.dueDate).isSame(moment(), "day")
+                            ? "bg-yellow-300 text-black font-semibold"
+                            : task.status !== "completed" &&
+                                moment(task.dueDate).isBefore(moment(), "day")
+                              ? "bg-red-500 text-white font-semibold"
+                              : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {new Date(task.dueDate).toLocaleDateString()}
+                      </span>
                     </td>
 
                     <td className="p-3">
@@ -199,53 +213,80 @@ const TaskDashboard = () => {
           </table>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredTasks.map((task) => (
-            <div key={task._id} className="bg-white rounded-xl shadow-lg p-5">
-              <h2 className="text-2xl font-bold mb-3">{task.taskName}</h2>
+            <div
+              key={task._id}
+              className="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-200 hover:-translate-y-2 p-6"
+            >
+              {/* Title */}
+              <div className="flex justify-between items-start mb-5">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {task.taskName}
+                </h2>
 
-              <p>
-                <strong>Assigned By:</strong> {task.user_id?.firstName}
-              </p>
-
-              <p>
-                <strong>Assigned To:</strong> {task.assignTo?.firstName}
-              </p>
-
-              <p>
-                <strong>Due Date:</strong>{" "}
-                {new Date(task.dueDate).toLocaleDateString()}
-              </p>
-
-              <p className="mb-4">
-                <strong>Status:</strong>{" "}
                 <span
-                  className={`px-2 py-1 rounded text-white ${
+                  className={`px-3 py-1 rounded-full text-xs font-bold text-white ${
                     task.status === "completed" ? "bg-green-500" : "bg-red-500"
                   }`}
                 >
                   {task.status}
                 </span>
-              </p>
+              </div>
 
-              <div className="flex gap-2">
+              {/* Details */}
+              <div className="space-y-3 text-gray-700">
+                <p className="flex justify-between">
+                  <span className="font-semibold">Assigned By</span>
+                  <span>{task.user_id?.firstName}</span>
+                </p>
+
+                <p className="flex justify-between">
+                  <span className="font-semibold">Assigned To</span>
+                  <span>{task.assignTo?.firstName}</span>
+                </p>
+
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">Due Date</span>
+
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      task.status !== "completed" &&
+                      moment(task.dueDate).isSame(moment(), "day")
+                        ? "bg-yellow-300 text-black"
+                        : task.status !== "completed" &&
+                            moment(task.dueDate).isBefore(moment(), "day")
+                          ? "bg-red-500 text-white"
+                          : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {moment(task.dueDate).format("DD MMM YYYY")}
+                  </span>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t my-5"></div>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
                 <button
                   onClick={() => navigate(`/viewtask/${task._id}`)}
-                  className="bg-blue-500 text-white px-3 py-2 rounded"
+                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl font-semibold transition-all"
                 >
                   View
                 </button>
 
                 <button
                   onClick={() => navigate(`/edittask/${task._id}`)}
-                  className="bg-green-500 text-white px-3 py-2 rounded"
+                  className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-xl font-semibold transition-all"
                 >
                   Edit
                 </button>
 
                 <button
                   onClick={() => handleDelete(task._id)}
-                  className="bg-red-500 text-white px-3 py-2 rounded"
+                  className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl font-semibold transition-all"
                 >
                   Delete
                 </button>
