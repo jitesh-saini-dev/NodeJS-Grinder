@@ -13,7 +13,7 @@ const Header = () => {
             to="/"
             className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
           >
-            Home
+            Tasks
           </Link>
 
           <Link
@@ -34,7 +34,7 @@ const Header = () => {
             to="/taskdata"
             className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
           >
-            Tasks
+            Admin Tasks
           </Link>
 
           <Link

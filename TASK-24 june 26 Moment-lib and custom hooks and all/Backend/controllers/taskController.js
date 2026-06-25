@@ -84,6 +84,40 @@ const getSignup = async (req, res) => {
   }
 };
 
+const updateTheme = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { theme } = req.body;
+
+    const updatedUser = await authModel.findByIdAndUpdate(
+      id,
+      { theme },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User Not Found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Theme Updated Successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // LOGIN USER (SIGNIN)
 const signin = async (req, res) => {
   try {
@@ -162,31 +196,82 @@ const createTask = async (req, res) => {
 //getAll active tasks
 const getAllTasks = async (req, res) => {
   try {
-    let tasks;
-
-    if (req.user.role === "admin") {
-      tasks = await taskModel
-        .find({ isDeleted: false })
-        .populate("user_id")
-        .populate("assignTo");
-    } else {
-      tasks = await taskModel
-        .find({
-          isDeleted: false,
-          $or: [
-            { user_id: req.user._id }, // Assigned By
-            { assignTo: req.user._id }, // Assigned To
-          ],
-        })
-        .populate("user_id")
-        .populate("assignTo");
+    // Only admin can access
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Only admin can access this resource",
+      });
     }
+
+    const tasks = await taskModel
+      .find({ isDeleted: false })
+      .populate("user_id")
+      .populate("assignTo");
+
+    return res.status(200).json({
+      success: true,
+      data: tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+//getAll active tasks
+const getCreatedTasks = async (req, res) => {
+  try {
+    if (req.user.role === "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Admins should use the Admin Tasks section to view tasks.",
+      });
+    }
+    const tasks = await taskModel
+      .find({
+        isDeleted: false,
+        user_id: req.user._id,
+      })
+      .populate("user_id")
+      .populate("assignTo");
 
     return res.status(200).json({
       data: tasks,
     });
   } catch (error) {
     return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+//get assigned tasks to user
+const getAssignedTasks = async (req, res) => {
+  try {
+    if (req.user.role === "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Admins should use the Admin Tasks section to view tasks.",
+      });
+    }
+
+    const tasks = await taskModel
+      .find({
+        isDeleted: false,
+        assignTo: req.user._id,
+      })
+      .populate("user_id")
+      .populate("assignTo");
+
+    return res.status(200).json({
+      success: true,
+      data: tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
@@ -369,11 +454,17 @@ module.exports = {
 
   getSignup,
 
+  updateTheme,
+
   signin,
 
   createTask,
 
   getAllTasks,
+
+  getCreatedTasks,
+
+  getAssignedTasks,
 
   getInactiveAllTasks,
 

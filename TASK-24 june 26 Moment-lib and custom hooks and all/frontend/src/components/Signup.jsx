@@ -14,6 +14,7 @@ const Signup = () => {
     state: "",
     country: "",
     role: "user",
+    theme: "light",
   });
 
   const [error, setError] = useState({});
@@ -57,6 +58,8 @@ const Signup = () => {
             address: "",
             state: "",
             country: "",
+            role: "user",
+            theme: "light",
           });
 
           navigate("/signin");
@@ -163,6 +166,18 @@ const Signup = () => {
               {error.role && (
                 <p className="text-red-500 text-sm">{error.role}</p>
               )}
+            </div>
+
+            <div>
+              <select
+                value={form.theme}
+                onChange={(e) => setForm({ ...form, theme: e.target.value })}
+                className="w-full px-5 py-4 rounded-2xl border outline-none"
+              >
+                <option value="">Select Theme</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
             </div>
 
             {/* Age */}

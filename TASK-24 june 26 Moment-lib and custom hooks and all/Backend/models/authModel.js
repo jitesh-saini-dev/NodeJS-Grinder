@@ -47,6 +47,10 @@ const authSchema = new mongoose.Schema(
     country: {
       type: String,
     },
+    theme: {
+      type: String,
+      default: "light",
+    },
   },
   {
     timestamps: true,

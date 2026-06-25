@@ -84,7 +84,7 @@ const EditTask = () => {
 
       alert("Task Updated Successfully");
 
-      navigate("/taskdata");
+      navigate("/");
     } catch (error) {
       console.log(error);
       console.log(error.response?.data);
