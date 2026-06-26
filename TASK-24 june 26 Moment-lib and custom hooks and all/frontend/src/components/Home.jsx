@@ -232,10 +232,13 @@ const Home = () => {
                         <td className="p-4 border-b text-gray-600">
                           <span
                             className={`px-3 py-1 rounded-full ${
-                              moment(task.dueDate).isSame(moment(), "day") &&
-                              task.status !== "completed"
-                                ? "bg-yellow-300 text-black font-semibold"
-                                : "bg-gray-100 text-gray-700"
+                              task.status !== "completed" &&
+                              moment(task.dueDate).isBefore(moment(), "day")
+                                ? "bg-red-500 text-white font-semibold"
+                                : task.status !== "completed" &&
+                                    moment(task.dueDate).isSame(moment(), "day")
+                                  ? "bg-yellow-300 text-black font-semibold"
+                                  : "bg-gray-100 text-gray-700"
                             }`}
                           >
                             {task.dueDate
@@ -313,10 +316,13 @@ const Home = () => {
 
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          moment(task.dueDate).isSame(moment(), "day") &&
-                          task.status !== "completed"
-                            ? "bg-yellow-300 text-yellow-900"
-                            : "bg-gray-100 text-gray-700"
+                          task.status !== "completed" &&
+                          moment(task.dueDate).isBefore(moment(), "day")
+                            ? "bg-red-500 text-white"
+                            : task.status !== "completed" &&
+                                moment(task.dueDate).isSame(moment(), "day")
+                              ? "bg-yellow-300 text-yellow-900"
+                              : "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {new Date(task.dueDate).toLocaleDateString()}
@@ -401,15 +407,20 @@ const Home = () => {
                         </td>
                         <td className="p-4 border-b text-gray-600">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              moment(task.dueDate).isSame(moment(), "day") &&
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              moment(task.dueDate).isBefore(moment(), "day") &&
                               task.status !== "completed"
-                                ? "bg-yellow-300 text-black font-bold"
-                                : "bg-gray-100 text-gray-700"
+                                ? "bg-red-300 text-red-900"
+                                : moment(task.dueDate).isSame(
+                                      moment(),
+                                      "day",
+                                    ) && task.status !== "completed"
+                                  ? "bg-yellow-300 text-black"
+                                  : "bg-gray-100 text-gray-700"
                             }`}
                           >
                             {task.dueDate
-                              ? new Date(task.dueDate).toLocaleDateString()
+                              ? moment(task.dueDate).format("DD MMM YYYY")
                               : "N/A"}
                           </span>
                         </td>
@@ -457,7 +468,7 @@ const Home = () => {
                           >
                             Edit
                           </button>
-                          
+
                           <button
                             onClick={() => handleDelete(task._id)}
                             className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
@@ -507,10 +518,13 @@ const Home = () => {
 
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            moment(task.dueDate).isSame(moment(), "day") &&
-                            task.status !== "completed"
+                            task.status !== "completed" &&
+                            moment(task.dueDate).isSame(moment(), "day")
                               ? "bg-yellow-300 text-yellow-900"
-                              : "bg-gray-100 text-gray-700"
+                              : task.status !== "completed" &&
+                                  moment(task.dueDate).isBefore(moment(), "day")
+                                ? "bg-red-500 text-white"
+                                : "bg-gray-100 text-gray-700"
                           }`}
                         >
                           {task.dueDate
