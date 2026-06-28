@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
-    user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "auth", // Must match the model name exactly
-      required: true,
-    },
+    // user_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "auth",
+    //   required: true,
+    // }, // same as assignby
     taskName: {
       type: String,
       required: true,
@@ -19,7 +19,7 @@ const taskSchema = new mongoose.Schema(
 
     assignedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "auth",
+      ref: "auth", // Must match the model name exactly
       required: true,
     },
 
