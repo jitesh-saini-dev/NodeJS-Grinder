@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const SecretKey = "b3hktb3ktbh3tb33453534b5o4b52ob524o5b25b42o5";
 
+
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -148,6 +149,5 @@ exports.reset = async (req, res) => {
 //       message: "All fields are required",
 //     });
 //   }
-  
 
 // };

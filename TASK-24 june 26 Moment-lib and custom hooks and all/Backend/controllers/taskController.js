@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const SecretKey =
   "d1628e12e40915c6cb23658430db9bcc70852795fffe542fa2b4223ee73145f0";
 
+const transporter = require("../utils/helper");
+
 // CREATE USER (SIGNUP)
 const signup = async (req, res) => {
   try {
@@ -181,6 +183,17 @@ const createTask = async (req, res) => {
       dueDate,
       status,
     });
+
+    const info = await transporter.sendMail({
+      from: "jiteshkumar2504@gmail.com",
+      to: "sureshpareek9636@gmail.com",
+      subject: "New Task Assigned",
+      html: `
+         <p>You have been placed.</p>
+  `,
+    });
+    // amansidana55@gmail.com
+    console.log(info.messageId);
 
     return res.status(201).json({
       message: "Task Created Successfully",
