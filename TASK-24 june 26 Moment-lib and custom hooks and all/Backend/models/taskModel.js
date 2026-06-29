@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
-    // user_id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "auth",
-    //   required: true,
-    // }, // same as assignby
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "auth",
+      required: true,
+    }, // same as assignby
     taskName: {
       type: String,
       required: true,

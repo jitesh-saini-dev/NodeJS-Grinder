@@ -184,14 +184,20 @@ const createTask = async (req, res) => {
       status,
     });
 
+    const assignedUser = await userModel.findById(assignTo);
+
     const info = await transporter.sendMail({
-      from: "jiteshkumar2504@gmail.com",
-      to: "sureshpareek9636@gmail.com",
+      from: process.env.EMAIL_USER,
+      to: assignedUser.email,
       subject: "New Task Assigned",
       html: `
-         <p>You have been placed.</p>
-  `,
+      <h2>New Task Assigned</h2>
+      <p>You have been assigned a new task.</p>
+      <p><strong>Task Name:</strong> ${taskName}</p>
+      <p><strong>Due Date:</strong> ${dueDate}</p>
+    `,
     });
+
     // amansidana55@gmail.com
     console.log(info.messageId);
 
@@ -206,7 +212,7 @@ const createTask = async (req, res) => {
   }
 };
 
-//getAll active tasks
+// //getAll active tasks
 const getAllTasks = async (req, res) => {
   try {
     // Only admin can access
@@ -233,6 +239,7 @@ const getAllTasks = async (req, res) => {
     });
   }
 };
+
 //getAll active tasks
 const getCreatedTasks = async (req, res) => {
   try {
