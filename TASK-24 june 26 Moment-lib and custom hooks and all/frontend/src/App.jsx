@@ -10,12 +10,12 @@ import ViewTask from "./components/ViewTask";
 import EditTask from "./components/EditTask";
 import TaskDashboard from "./components/TaskDashboard";
 import TaskForm from "./components/TaskForm";
+import ForgotPassword from "./components/ForgotPassword";
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
-        <Header />
         <Routes>
           <Route
             path="/"
@@ -27,6 +27,7 @@ const App = () => {
           />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgotpass" element={<ForgotPassword />} />
 
           <Route path="/viewtask/:id" element={<ViewTask />} />
           <Route path="/edittask/:id" element={<EditTask />} />

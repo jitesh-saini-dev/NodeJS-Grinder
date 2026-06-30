@@ -19,7 +19,7 @@ const TaskForm = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("http://localhost:3000/tasks/getSignupUser", {
+      const res = await axios.get("http://localhost:3000/users/getSignupUser", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

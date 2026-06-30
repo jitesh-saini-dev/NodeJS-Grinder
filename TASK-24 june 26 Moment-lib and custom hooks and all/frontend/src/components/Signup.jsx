@@ -41,7 +41,7 @@ const Signup = () => {
 
     if (Object.keys(errorobj).length === 0) {
       axios
-        .post("http://localhost:3000/tasks/posting", form)
+        .post("http://localhost:3000/users/posting", form)
         .then((res) => {
           console.log(res.data);
 

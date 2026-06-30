@@ -9,8 +9,11 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-const userRoutes = require("./routes/taskRoutes");
-app.use("/tasks", userRoutes);
+const userRoutes = require("./routes/userRoutes");
+app.use("/users", userRoutes);
+
+const taskRoutes = require("./routes/taskRoutes");
+app.use("/tasks", taskRoutes);
 
 // MongoDB Connection
 mongoose

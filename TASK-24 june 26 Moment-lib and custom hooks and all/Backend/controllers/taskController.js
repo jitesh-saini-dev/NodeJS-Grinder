@@ -5,163 +5,246 @@ const jwt = require("jsonwebtoken");
 const SecretKey =
   "d1628e12e40915c6cb23658430db9bcc70852795fffe542fa2b4223ee73145f0";
 
-const transporter = require("../utils/helper");
+// const transporter = require("../utils/helper");
 
-// CREATE USER (SIGNUP)
-const signup = async (req, res) => {
-  try {
-    const {
-      firstName,
-      lastName,
-      age,
-      phone,
-      email,
-      password,
-      address,
-      state,
-      country,
-      role,
-    } = req.body;
+// // CREATE USER (SIGNUP)
+// const signup = async (req, res) => {
+//   try {
+//     const {
+//       firstName,
+//       lastName,
+//       age,
+//       phone,
+//       email,
+//       password,
+//       address,
+//       state,
+//       country,
+//       role,
+//     } = req.body;
 
-    if (
-      !firstName ||
-      !lastName ||
-      !age ||
-      !phone ||
-      !email ||
-      !password ||
-      !address ||
-      !state ||
-      !country ||
-      !role
-    ) {
-      return res.status(400).json({
-        message: "All fields are required",
-      });
-    }
+//     if (
+//       !firstName ||
+//       !lastName ||
+//       !age ||
+//       !phone ||
+//       !email ||
+//       !password ||
+//       !address ||
+//       !state ||
+//       !country ||
+//       !role
+//     ) {
+//       return res.status(400).json({
+//         message: "All fields are required",
+//       });
+//     }
 
-    const hash = await bcrypt.hash(password, 10);
+//     const hash = await bcrypt.hash(password, 10);
 
-    const data = {
-      firstName,
-      lastName,
-      age,
-      phone,
-      email,
-      password: hash,
-      address,
-      state,
-      country,
-      role,
-    };
+//     const data = {
+//       firstName,
+//       lastName,
+//       age,
+//       phone,
+//       email,
+//       password: hash,
+//       address,
+//       state,
+//       country,
+//       role,
+//     };
 
-    const savedData = new authModel(data);
-    const result = await savedData.save();
+//     const savedData = new authModel(data);
+//     const result = await savedData.save();
 
-    return res.status(201).json(result);
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+//     return res.status(201).json(result);
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
 
-//SignUp getData
-const getSignup = async (req, res) => {
-  try {
-    console.log(">>>>user", req.user);
-    const result = await authModel.find();
+// //SignUp getData
+// const getSignup = async (req, res) => {
+//   try {
+//     console.log(">>>>user", req.user);
+//     const result = await authModel.find();
 
-    if (result.length === 0) {
-      return res.status(404).json({
-        message: "No Users Found",
-      });
-    }
+//     if (result.length === 0) {
+//       return res.status(404).json({
+//         message: "No Users Found",
+//       });
+//     }
 
-    return res.status(200).json(result);
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+//     return res.status(200).json(result);
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
 
-const updateTheme = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { theme } = req.body;
+// // LOGIN USER (SIGNIN)
+// const signin = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
 
-    const updatedUser = await authModel.findByIdAndUpdate(
-      id,
-      { theme },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+//     if (!(email && password)) {
+//       return res.status(400).json({
+//         field: "email",
+//         message: "All fields are required",
+//       });
+//     }
 
-    if (!updatedUser) {
-      return res.status(404).json({
-        success: false,
-        message: "User Not Found",
-      });
-    }
+//     const existingData = await authModel.findOne({ email });
 
-    return res.status(200).json({
-      success: true,
-      message: "Theme Updated Successfully",
-      data: updatedUser,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+//     if (!existingData) {
+//       return res.status(404).json({
+//         message: "Email not found",
+//       });
+//     }
 
-// LOGIN USER (SIGNIN)
-const signin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+//     const match = await bcrypt.compare(password, existingData.password);
 
-    if (!(email && password)) {
-      return res.status(400).json({
-        field: "email",
-        message: "All fields are required",
-      });
-    }
+//     if (!match) {
+//       return res.status(400).json({
+//         message: "Login Password Incorrect",
+//       });
+//     }
 
-    const existingData = await authModel.findOne({ email });
+//     const token = jwt.sign({ email }, SecretKey);
 
-    if (!existingData) {
-      return res.status(404).json({
-        message: "Email not found",
-      });
-    }
+//     return res.status(200).json({
+//       message: "Login Successfully",
+//       token,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
 
-    const match = await bcrypt.compare(password, existingData.password);
+// //forgot Password
+// const forgotpass = async (req, res) => {
+//   try {
+//     const { email, password, confirmPassword } = req.body;
+//     if (!email || !password || !confirmPassword) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields are required",
+//       });
+//     }
 
-    if (!match) {
-      return res.status(400).json({
-        message: "Login Password Incorrect",
-      });
-    }
+//     const existingData = await authModel.findOne({ email });
 
-    const token = jwt.sign({ email }, SecretKey);
+//     if (!existingData) {
+//       return res.status(404).json({
+//         message: "Email not found",
+//       });
+//     }
 
-    return res.status(200).json({
-      message: "Login Successfully",
-      token,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+//     if (password !== confirmPassword) {
+//       return res.status(400).json({
+//         message: "Password and Confirm Password do not match",
+//       });
+//     }
+//     const saltRounds = 10;
+//     const salt = bcrypt.genSaltSync(saltRounds);
+//     console.log(">>>>salt", salt);
+//     const hash = bcrypt.hashSync(password, salt);
+//     console.log(">>>>>hash", hash);
+
+//     const result = await authModel.findOneAndUpdate(
+//       { email },
+//       { password: hash },
+//       { new: true },
+//     );
+
+//     return res.status(200).json({
+//       message: "Password Updated Successfully",
+//       result,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "Internal Server Error",
+//       error: error.message,
+//     });
+//   }
+// };
+
+// //Reset Password
+// const resetPassword = async (req, res) => {
+//   try {
+//     const { email, password, newPassword, confirmPassword } = req.body;
+
+//     if (!email || !password || !newPassword || !confirmPassword) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields are required",
+//       });
+//     }
+
+//     const existingData = await authModel.findOne({ email });
+
+//     if (!existingData) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Email not found",
+//       });
+//     }
+
+//     const match = await bcrypt.compare(password, existingData.password);
+
+//     if (!match) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Old Password Incorrect",
+//       });
+//     }
+
+//     if (newPassword !== confirmPassword) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "New Password and Confirm Password do not match",
+//       });
+//     }
+
+//     const saltRounds = 10;
+//     const salt = bcrypt.genSaltSync(saltRounds);
+
+//     console.log(">>>>salt", salt);
+
+//     const hash = bcrypt.hashSync(newPassword, salt);
+
+//     console.log(">>>>>hash", hash);
+
+//     const result = await authModel.findOneAndUpdate(
+//       { email },
+//       {
+//         password: hash,
+//       },
+//       {
+//         new: true,
+//       },
+//     );
+
+//     return res.status(200).json({
+//       message: "Password Updated Successfully",
+//       result,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "Internal Server Error",
+//       error: error.message,
+//     });
+//   }
+// };
 
 //create task
+
 const createTask = async (req, res) => {
   try {
     const { taskName, assignedBy, dueDate, assignTo, status } = req.body;
@@ -470,13 +553,15 @@ const permanentDeleteTask = async (req, res) => {
 };
 
 module.exports = {
-  signup,
+  // signup,
 
-  getSignup,
+  // getSignup,
 
-  updateTheme,
+  // forgotpass,
 
-  signin,
+  // resetPassword,
+
+  // signin,
 
   createTask,
 

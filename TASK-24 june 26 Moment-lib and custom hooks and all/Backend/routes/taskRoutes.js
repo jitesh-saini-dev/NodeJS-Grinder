@@ -4,17 +4,17 @@ const router = express.Router();
 const authMiddleware = require("../authMiddleware/auth");
 const taskController = require("../controllers/taskController");
 
-// Create User (Signup)
-router.post("/posting", taskController.signup);
+// // Create User (Signup)
+// router.post("/posting", taskController.signup);
 
-// Getting User (Signup)
-router.get("/getSignupUser", authMiddleware, taskController.getSignup);
+// // Getting User (Signup)
+// router.get("/getSignupUser", authMiddleware, taskController.getSignup);
 
-//update theme
-router.patch("/updateTheme/:id", authMiddleware, taskController.updateTheme);
+// //update theme
+// router.patch("/updateTheme/:id", authMiddleware, taskController.updateTheme);
 
-// Login User (Signin)
-router.post("/signin", taskController.signin);
+// // Login User (Signin)
+// router.post("/signin", taskController.signin);
 
 //create task
 router.post("/addtasks", authMiddleware, taskController.createTask);

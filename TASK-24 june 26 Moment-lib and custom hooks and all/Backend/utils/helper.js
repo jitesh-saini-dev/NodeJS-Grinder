@@ -12,7 +12,6 @@
 
 // module.exports = transporter;
 
-
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 
