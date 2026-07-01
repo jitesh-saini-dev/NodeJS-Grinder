@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const SecretKey =
   "d1628e12e40915c6cb23658430db9bcc70852795fffe542fa2b4223ee73145f0";
 
-const transporter = require("../utils/taskHelper");
+const { sendWelcomeEmail } = require("../utils/userHelper");
 
 // CREATE USER (SIGNUP)
 const signup = async (req, res) => {
@@ -40,6 +40,14 @@ const signup = async (req, res) => {
       });
     }
 
+    const existingUser = await authModel.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: "User already exists with this email",
+      });
+    }
+
     const hash = await bcrypt.hash(password, 10);
 
     const data = {
@@ -57,6 +65,9 @@ const signup = async (req, res) => {
 
     const savedData = new authModel(data);
     const result = await savedData.save();
+
+    const info = await sendWelcomeEmail(email, firstName);
+    console.log(info.messageId);
 
     return res.status(201).json(result);
   } catch (error) {

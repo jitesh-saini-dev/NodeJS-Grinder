@@ -33,7 +33,7 @@ const createTask = async (req, res) => {
 
     const info = await sendTaskEmail(assignedUser.email, taskName, dueDate);
     // console.log(info);
-    console.log(info.messageId);
+    // console.log(info.messageId);
 
     return res.status(201).json({
       message: "Task Created Successfully",
