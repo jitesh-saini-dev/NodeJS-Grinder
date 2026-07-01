@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const SecretKey =
   "d1628e12e40915c6cb23658430db9bcc70852795fffe542fa2b4223ee73145f0";
 
-const transporter = require("../utils/helper");
+const transporter = require("../utils/taskHelper");
 
 // CREATE USER (SIGNUP)
 const signup = async (req, res) => {

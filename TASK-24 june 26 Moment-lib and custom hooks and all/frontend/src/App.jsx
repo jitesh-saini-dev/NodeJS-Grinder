@@ -16,6 +16,7 @@ const App = () => {
   return (
     <>
       <BrowserRouter>
+      <Header/>
         <Routes>
           <Route
             path="/"
