@@ -1,12 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
+const cloudinary = require("cloudinary").v2;
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(cors());
+app.use(fileUpload());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 const userRoutes = require("./routes/userRoutes");

@@ -60,7 +60,12 @@ const getAllTasks = async (req, res) => {
     const tasks = await taskModel
       .find({ isDeleted: false })
       .populate("user_id")
-      .populate("assignTo");
+      .populate("assignTo")
+      .populate("assignedBy");
+
+    // console.log(JSON.stringify(tasks, null, 2));
+    // console.log(taskModel.collection.name);
+    // console.log(await taskModel.countDocuments());
 
     return res.status(200).json({
       success: true,
@@ -166,7 +171,11 @@ const getSingleTask = async (req, res) => {
     const task = await taskModel
       .findById(id)
       .populate("user_id", "firstName lastName email")
+      .populate("assignedBy", "firstName lastName email")
       .populate("assignTo", "firstName lastName email");
+
+    // console.log(">>>>>>>>>>>>>>task");
+    // console.log(JSON.stringify(task, null, 2));
 
     if (!task) {
       return res.status(404).json({
@@ -303,17 +312,42 @@ const permanentDeleteTask = async (req, res) => {
   }
 };
 
+const getCalendarTasks = async (req, res) => {
+  try {
+    let tasks = [];
+
+    // ADMIN
+    if (req.user.role === "admin") {
+      tasks = await taskModel
+        .find({ isDeleted: false })
+        .populate("assignedBy", "firstName lastName")
+        .populate("assignTo", "firstName lastName");
+    }
+
+    // NORMAL USER
+    else {
+      tasks = await taskModel
+        .find({
+          isDeleted: false,
+          $or: [{ assignedBy: req.user._id }, { assignTo: req.user._id }],
+        })
+        .populate("assignedBy", "firstName lastName")
+        .populate("assignTo", "firstName lastName");
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: tasks,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
-  // signup,
-
-  // getSignup,
-
-  // forgotpass,
-
-  // resetPassword,
-
-  // signin,
-
   createTask,
 
   getAllTasks,
@@ -333,4 +367,6 @@ module.exports = {
   restoreTask,
 
   permanentDeleteTask,
+
+  getCalendarTasks,
 };

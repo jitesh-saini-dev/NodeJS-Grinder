@@ -13,7 +13,10 @@ router.get("/getSignupUser", authMiddleware, userController.getSignup);
 router.post("/signin", userController.signin);
 
 //forgot password
-router.patch("/forgot", userController.forgotpass);
+router.patch("/forgotpass", userController.forgotpass);
+
+//verifyOtp 
+router.post("/verifyOtp", userController.verifyOtp);
 
 //reset password
 router.patch("/resetPassword", userController.resetPassword);

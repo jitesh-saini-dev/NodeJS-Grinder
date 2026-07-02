@@ -15,6 +15,7 @@ const Signup = () => {
     country: "",
     role: "user",
     theme: "light",
+    image: "",
   });
 
   const [error, setError] = useState({});
@@ -40,12 +41,21 @@ const Signup = () => {
     setError(errorobj);
 
     if (Object.keys(errorobj).length === 0) {
+      const formData = new FormData();
+
+      Object.keys(form).forEach((key) => {
+        formData.append(key, form[key]);
+      });
+
       axios
-        .post("http://localhost:3000/users/posting", form)
+        .post("http://localhost:3000/users/posting", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((res) => {
           console.log(res.data);
 
-          // localStorage.setItem("user", JSON.stringify(form));
           alert("Signup Successfully 🎉");
 
           setForm({
@@ -60,6 +70,7 @@ const Signup = () => {
             country: "",
             role: "user",
             theme: "light",
+            image: "",
           });
 
           navigate("/signin");
@@ -121,6 +132,30 @@ const Signup = () => {
                 <p className="text-red-500 text-sm">{error.lastName}</p>
               )}
             </div>
+
+            {/* Image */}
+            <div className="md:col-span-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    image: e.target.files[0],
+                  })
+                }
+                className="w-full px-5 py-4 rounded-2xl border outline-none"
+              />
+            </div>
+
+            {/* Image Preview */}
+            {form.image && (
+              <img
+                src={URL.createObjectURL(form.image)}
+                alt="preview"
+                className="w-32 h-32 rounded-full object-cover mx-auto mt-4 border-4 border-blue-500"
+              />
+            )}
 
             {/* Email */}
             <div>

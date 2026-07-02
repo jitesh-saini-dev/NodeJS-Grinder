@@ -6,6 +6,7 @@ import useViewToggle from "../hooks/useViewToggle";
 
 import { BsGrid3X3GapFill } from "react-icons/bs";
 import { HiOutlineTableCells } from "react-icons/hi2";
+import { FaCalendarAlt } from "react-icons/fa";
 
 import moment from "moment";
 import Header from "./Header";
@@ -109,9 +110,9 @@ const TaskDashboard = () => {
 
           <button
             onClick={() => navigate("/form")}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg transition-all"
           >
-            + Create Task
+            <span className="text-2xl leading-none">+</span> Create Task
           </button>
 
           <button
@@ -301,6 +302,20 @@ const TaskDashboard = () => {
             ))}
           </div>
         )}
+      </div>
+      {/* Floating Calendar Button */}
+      <div className="fixed bottom-6 right-6 z-50 group">
+        {/* Tooltip */}
+        <div className="absolute right-20 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-lg">
+          Task Calendar
+        </div>
+
+        <button
+          onClick={() => navigate("/task-calendar")}
+          className="w-16 h-16 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-2xl hover:scale-110 transition-all duration-300 flex items-center justify-center border-4 border-white"
+        >
+          <FaCalendarAlt size={28} />
+        </button>
       </div>
     </>
   );

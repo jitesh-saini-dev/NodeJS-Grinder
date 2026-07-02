@@ -58,4 +58,6 @@ router.delete(
   taskController.permanentDeleteTask,
 );
 
+router.get("/calendarTasks", authMiddleware, taskController.getCalendarTasks);
+
 module.exports = router;

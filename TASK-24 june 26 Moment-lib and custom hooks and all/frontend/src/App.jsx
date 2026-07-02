@@ -11,12 +11,14 @@ import EditTask from "./components/EditTask";
 import TaskDashboard from "./components/TaskDashboard";
 import TaskForm from "./components/TaskForm";
 import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
+import TaskCalendar from "./components/TaskCalendar";
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
-      {/* <Header/> */}
+        {/* <Header/> */}
         <Routes>
           <Route
             path="/"
@@ -29,6 +31,8 @@ const App = () => {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgotpass" element={<ForgotPassword />} />
+          <Route path="/resetPassword" element={<ResetPassword />} />
+          <Route path="/task-calendar" element={<TaskCalendar />} />
 
           <Route path="/viewtask/:id" element={<ViewTask />} />
           <Route path="/edittask/:id" element={<EditTask />} />

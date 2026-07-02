@@ -7,8 +7,8 @@ const SecretKey =
 const auth = async (req, res, next) => {
   try {
     const authtoken = req.headers.authorization;
-    console.log(req.headers);
-    console.log(req.headers.authorization);
+    // console.log(req.headers);
+    // console.log(req.headers.authorization);
 
     if (!authtoken) {
       return res.status(401).json({

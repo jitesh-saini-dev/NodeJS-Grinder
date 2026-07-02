@@ -51,6 +51,23 @@ const authSchema = new mongoose.Schema(
       type: String,
       default: "light",
     },
+    image: {
+      type: String,
+    },
+    otp: {
+      type: String,
+      default: null,
+    },
+
+    otpExpire: {
+      type: Date,
+      default: null,
+    },
+
+    otpVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
