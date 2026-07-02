@@ -15,10 +15,14 @@ router.post("/signin", userController.signin);
 //forgot password
 router.patch("/forgotpass", userController.forgotpass);
 
-//verifyOtp 
+//verifyOtp
 router.post("/verifyOtp", userController.verifyOtp);
 
 //reset password
 router.patch("/resetPassword", userController.resetPassword);
+
+router.get("/me", authMiddleware, userController.getMe);
+
+router.patch("/update-profile", authMiddleware, userController.updateProfile);
 
 module.exports = router;

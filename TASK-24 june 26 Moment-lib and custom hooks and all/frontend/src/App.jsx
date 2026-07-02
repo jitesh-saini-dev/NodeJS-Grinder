@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
-import Header from "./components/Header";
+// import Header from "./components/Header";
 import Protectedroute from "./components/Protectedroute";
 import Bin from "./components/Bin";
 
@@ -13,6 +13,7 @@ import TaskForm from "./components/TaskForm";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import TaskCalendar from "./components/TaskCalendar";
+import EditProfile from "./components/EditProfile";
 
 const App = () => {
   return (
@@ -46,6 +47,8 @@ const App = () => {
             }
           />
           <Route path="/form" element={<TaskForm />} />
+
+          <Route path="/edit-profile" element={<EditProfile />} />
 
           <Route
             path="/bin"

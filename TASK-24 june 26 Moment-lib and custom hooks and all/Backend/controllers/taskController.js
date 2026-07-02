@@ -7,6 +7,11 @@ const SecretKey =
 
 const { sendTaskEmail } = require("../utils/taskHelper");
 
+const { jsPDF } = require("jspdf");
+
+const googleTTS = require("google-tts-api");
+const axios = require("axios");
+
 const createTask = async (req, res) => {
   try {
     const { taskName, assignedBy, dueDate, assignTo, status } = req.body;
@@ -312,6 +317,7 @@ const permanentDeleteTask = async (req, res) => {
   }
 };
 
+//Calender view
 const getCalendarTasks = async (req, res) => {
   try {
     let tasks = [];
@@ -347,6 +353,138 @@ const getCalendarTasks = async (req, res) => {
   }
 };
 
+//PDF Download
+
+const downloadTaskReport = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const task = await taskModel
+      .findById(id)
+      .populate("user_id", "firstName lastName")
+      .populate("assignTo", "firstName lastName");
+
+    // console.log("REQ USER => ", req.user);
+    // console.log("TASK USER => ", task.user_id?._id.toString());
+    // console.log("ASSIGN TO => ", task.assignTo?._id.toString());
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    /*
+      ADMIN -> kisi bhi task ki pdf download kar sakta hai
+
+      USER -> sirf:
+      1) jo usne assign ki hai
+      2) jo usko assign hui hai
+    */
+
+    if (
+      req.user.role !== "admin" &&
+      task.user_id?._id.toString() !== req.user._id.toString() &&
+      task.assignTo?._id.toString() !== req.user._id.toString()
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not allowed to download this report",
+      });
+    }
+
+    const doc = new jsPDF();
+
+    let y = 20;
+
+    doc.text("TASK REPORT", 10, 10);
+
+    doc.text(`Task Name : ${task.taskName}`, 10, y);
+    y += 10;
+
+    doc.text(
+      `Assigned By : ${
+        task.user_id
+          ? `${task.user_id.firstName} ${task.user_id.lastName}`
+          : "N/A"
+      }`,
+      10,
+      y,
+    );
+
+    y += 10;
+
+    doc.text(
+      `Assigned To : ${
+        task.assignTo
+          ? `${task.assignTo.firstName} ${task.assignTo.lastName}`
+          : "N/A"
+      }`,
+      10,
+      y,
+    );
+
+    y += 10;
+
+    doc.text(`Status : ${task.status}`, 10, y);
+
+    y += 10;
+
+    doc.text(
+      `Due Date : ${new Date(task.dueDate).toLocaleDateString()}`,
+      10,
+      y,
+    );
+
+    const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${task.taskName}.pdf`,
+    );
+
+    res.send(pdfBuffer);
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const speakTask = async (req, res) => {
+  try {
+    const task = await taskModel.findById(req.params.id);
+
+    const text = `
+      Task Name ${task.taskName}.
+      Current Status ${task.status}.
+      Due Date ${new Date(task.dueDate).toLocaleDateString()}.
+    `;
+
+    const url = googleTTS.getAudioUrl(text, {
+      lang: "en-IN",
+      slow: false,
+      host: "https://translate.google.com",
+    });
+
+    const response = await axios.get(url, {
+      responseType: "stream",
+    });
+
+    res.setHeader("Content-Type", "audio/mpeg");
+
+    response.data.pipe(res);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createTask,
 
@@ -369,4 +507,8 @@ module.exports = {
   permanentDeleteTask,
 
   getCalendarTasks,
+
+  downloadTaskReport,
+
+  speakTask,
 };

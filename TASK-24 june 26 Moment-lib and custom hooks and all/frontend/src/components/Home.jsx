@@ -127,6 +127,56 @@ const Home = () => {
     }
   };
 
+  //PDF Download
+  const downloadPDF = async (taskId, taskName) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get(
+        `http://localhost:3000/tasks/download-report/${taskId}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.setAttribute("download", `${taskName.replace(/\s+/g, "_")}.pdf`);
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.log(error.response?.status);
+      console.log(error.response?.data);
+
+      toast.error(error.response?.data?.message || "Failed to download PDF");
+    }
+  };
+
+  //listen
+  const speakTask = (task) => {
+    const speech = new SpeechSynthesisUtterance(
+      `Task name ${task.taskName}.
+    Status ${task.status}.
+    Due date ${new Date(task.dueDate).toLocaleDateString()}`,
+    );
+
+    speech.lang = "en-US";
+
+    window.speechSynthesis.speak(speech);
+  };
+
   // Search
   const filteredTasks = tasks.filter(
     (task) =>
@@ -270,25 +320,47 @@ const Home = () => {
                           <td className="p-4 border-b text-gray-600">
                             {task.assignTo?.firstName} {task.assignTo?.lastName}
                           </td>
-                          <td className="p-4 border-b flex justify-center gap-2">
-                            <button
-                              onClick={() => navigate(`/viewtask/${task._id}`)}
-                              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
-                            >
-                              View
-                            </button>
-                            <button
-                              onClick={() => navigate(`/edittask/${task._id}`)}
-                              className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(task._id)}
-                              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
-                            >
-                              Delete
-                            </button>
+
+                          <td className="p-4 border-b">
+                            <div className="flex flex-wrap items-center justify-center gap-2">
+                              <button
+                                onClick={() =>
+                                  navigate(`/viewtask/${task._id}`)
+                                }
+                                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
+                              >
+                                View
+                              </button>
+                              <button
+                                onClick={() =>
+                                  navigate(`/edittask/${task._id}`)
+                                }
+                                className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(task._id)}
+                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
+                              >
+                                Delete
+                              </button>
+                              <button
+                                onClick={() =>
+                                  downloadPDF(task._id, task.taskName)
+                                }
+                                className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300"
+                              >
+                                Download
+                              </button>
+
+                              <button
+                                onClick={() => speakTask(task)}
+                                className="bg-orange-500 text-white px-3 py-2 rounded-lg"
+                              >
+                                🔊 Listen
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -359,26 +431,38 @@ const Home = () => {
                       </div>
 
                       {/* Buttons */}
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         <button
                           onClick={() => navigate(`/viewtask/${task._id}`)}
                           className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl font-semibold transition-all"
                         >
                           View
                         </button>
-
                         <button
                           onClick={() => navigate(`/edittask/${task._id}`)}
                           className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-xl font-semibold transition-all"
                         >
                           Edit
                         </button>
-
                         <button
                           onClick={() => handleDelete(task._id)}
                           className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl font-semibold transition-all"
                         >
                           Delete
+                        </button>
+
+                        <button
+                          onClick={() => downloadPDF(task._id, task.taskName)}
+                          className="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-xl font-semibold transition-all"
+                        >
+                          Download
+                        </button>
+
+                        <button
+                          onClick={() => speakTask(task)}
+                          className="bg-orange-500 text-white px-3 py-2 rounded-lg"
+                        >
+                          🔊 Listen
                         </button>
                       </div>
                     </div>
@@ -489,6 +573,22 @@ const Home = () => {
                               className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
                             >
                               Delete
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                downloadPDF(task._id, task.taskName)
+                              }
+                              className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300"
+                            >
+                              Download
+                            </button>
+
+                            <button
+                              onClick={() => speakTask(task)}
+                              className="bg-orange-500 text-white px-3 py-2 rounded-lg"
+                            >
+                              🔊 Listen
                             </button>
                           </td>
                         </tr>
@@ -608,6 +708,20 @@ const Home = () => {
                             className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl font-semibold transition-all"
                           >
                             Delete
+                          </button>
+
+                          <button
+                            onClick={() => downloadPDF(task._id, task.taskName)}
+                            className="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-xl font-semibold transition-all"
+                          >
+                            Download
+                          </button>
+
+                          <button
+                            onClick={() => speakTask(task)}
+                            className="bg-orange-500 text-white px-3 py-2 rounded-lg"
+                          >
+                            🔊 Listen
                           </button>
                         </div>
                       </div>

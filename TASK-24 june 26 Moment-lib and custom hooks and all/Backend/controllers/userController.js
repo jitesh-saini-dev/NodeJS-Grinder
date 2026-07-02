@@ -330,6 +330,81 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const getMe = async (req, res) => {
+  try {
+    const user = await authModel.findById(req.user._id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const user = await authModel.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const { firstName, lastName, age, phone, address, state, country } =
+      req.body;
+
+    let image = user.image;
+
+    // agar nayi image upload hui hai
+    if (req.files && Object.keys(req.files).length > 0) {
+      const uploadData = await uploadImage(req.files);
+      image = uploadData[0].url;
+    }
+
+    const updatedUser = await authModel
+      .findByIdAndUpdate(
+        req.user._id,
+        {
+          firstName,
+          lastName,
+          age,
+          phone,
+          address,
+          state,
+          country,
+          image,
+        },
+        {
+          new: true,
+        },
+      )
+      .select("-password");
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile Updated Successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   signup,
 
@@ -342,4 +417,8 @@ module.exports = {
   resetPassword,
 
   signin,
+
+  getMe,
+
+  updateProfile,
 };
