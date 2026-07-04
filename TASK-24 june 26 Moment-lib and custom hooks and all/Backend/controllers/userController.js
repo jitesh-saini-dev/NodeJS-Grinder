@@ -9,6 +9,9 @@ const { sendWelcomeEmail, sendOtpEmail } = require("../utils/userHelper");
 
 const { uploadImage } = require("../utils/cloudinaryFileUpload");
 
+require("../config/firebase");
+const { getAuth } = require("firebase-admin/auth");
+
 // const googleTTS = require("google-tts-api"); // CommonJS
 
 // CREATE USER (SIGNUP)
@@ -405,6 +408,55 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const googleLogin = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    const decodedToken = await getAuth().verifyIdToken(token);
+
+    console.log(decodedToken);
+
+    const { email, name, uid, picture } = decodedToken;
+
+    let user = await authModel.findOne({
+      email,
+    });
+
+    if (!user) {
+      user = await authModel.create({
+        firstName: name,
+        email,
+        image: picture,
+        googleId: uid,
+        provider: "google",
+      });
+    }
+
+    const jwtToken = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+      },
+      SecretKey,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    res.json({
+      token: jwtToken,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    console.log(error.errors);
+
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   signup,
 
@@ -421,4 +473,6 @@ module.exports = {
   getMe,
 
   updateProfile,
+
+  googleLogin,
 };

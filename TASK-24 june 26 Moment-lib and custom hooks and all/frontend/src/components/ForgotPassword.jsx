@@ -174,98 +174,262 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <button
-          type="button"
-          onClick={() => navigate("/signin")}
-          className="mb-5 text-indigo-600 hover:text-indigo-800 font-semibold"
-        >
-          ← Back
-        </button>
-
-        <h1 className="text-4xl font-bold text-center text-gray-800">
-          Forgot Password
-        </h1>
-
-        <p className="text-center text-gray-500 mt-2 mb-5">
-          Enter your registered email.
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Enter Email"
-            className="w-full border p-3 rounded"
-            value={form.email}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                email: e.target.value,
-              })
-            }
-          />
-
-          {error.email && <p className="text-red-500 text-sm">{error.email}</p>}
-
+    <div className="min-h-screen flex items-center justify-center ">
+      <div className="min-h-screen  flex items-center justify-center p-4 font-['Inter']">
+        <div className="w-full max-w-md rounded-3xl shadow-2xl p-7">
+          {/* Back Button */}
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white p-3 rounded disabled:opacity-60"
+            type="button"
+            onClick={() => navigate("/signin")}
+            className="mb-5 text-gray-600 hover:text-black font-medium transition flex items-center gap-2"
           >
-            {loading ? "Sending OTP..." : "Send OTP"}
+            ← Back
           </button>
-        </form>
+
+          {/* Header */}
+          <div className="text-center mb-7">
+            <h1 className="text-3xl font-bold text-gray-800">
+              Forgot Password 🔐
+            </h1>
+
+            <p className="text-gray-500 mt-2 text-sm">
+              Enter your registered email address to receive an OTP.
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className="
+            w-full
+            px-4
+            py-3
+            rounded-xl
+            border
+            border-gray-300
+            bg-white
+            outline-none
+            focus:ring-4
+            focus:ring-blue-100
+            focus:border-blue-500
+            transition
+          "
+                value={form.email}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    email: e.target.value,
+                  })
+                }
+              />
+
+              {error.email && (
+                <p className="text-red-500 text-sm mt-2">{error.email}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="
+          w-full
+          py-3
+          rounded-xl
+          bg-gradient-to-r
+          from-blue-600
+          to-indigo-600
+          hover:from-blue-700
+          hover:to-indigo-700
+          text-white
+          font-semibold
+          shadow-lg
+          hover:shadow-xl
+          transition-all
+          duration-300
+          disabled:opacity-60
+        "
+            >
+              {loading ? "Sending OTP..." : "Send OTP"}
+            </button>
+          </form>
+        </div>
       </div>
 
       {showOtpModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">Verify OTP</h2>
-                <p className="text-gray-500 mt-1">Enter the OTP sent to</p>
-                <p className="font-semibold text-blue-600">{form.email}</p>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md p-4 font-['Inter']">
+          <div
+            className="
+      relative
+      w-full
+      max-w-md
+      bg-white/90
+      backdrop-blur-xl
+      rounded-3xl
+      border
+      border-white/50
+      shadow-[0_25px_80px_rgba(0,0,0,0.15)]
+      p-8
+      animate-in
+      fade-in
+      zoom-in-95
+      duration-300
+    "
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowOtpModal(false)}
+              className="
+          absolute
+          top-5
+          right-5
+          w-10
+          h-10
+          rounded-full
+          bg-gray-100
+          hover:bg-gray-200
+          text-gray-500
+          hover:text-black
+          transition-all
+          duration-300
+          flex
+          items-center
+          justify-center
+          text-xl
+        "
+            >
+              ✕
+            </button>
 
-              <button
-                onClick={() => setShowOtpModal(false)}
-                className="text-2xl text-gray-400 hover:text-red-500"
+            {/* Icon */}
+            <div className="flex justify-center">
+              <div
+                className="
+          w-20
+          h-20
+          rounded-full
+          bg-gray-100
+          flex
+          items-center
+          justify-center
+          text-4xl
+        "
               >
-                ✕
-              </button>
+                🔐
+              </div>
             </div>
 
+            {/* Header */}
+            <div className="text-center mt-5">
+              <h2 className="text-3xl font-bold text-gray-900">Verify OTP</h2>
+
+              <p className="text-gray-500 mt-3 text-sm leading-relaxed">
+                Enter the verification code sent to
+              </p>
+
+              <p
+                className="
+          mt-2
+          font-semibold
+          text-gray-800
+          break-all
+        "
+              >
+                {form.email}
+              </p>
+            </div>
+
+            {/* OTP Input */}
             <input
               type="text"
               maxLength={6}
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-              placeholder="Enter OTP"
-              className="w-full mt-6 border rounded-xl p-4 text-center text-2xl tracking-[8px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="• • • • • •"
+              className="
+          w-full
+          mt-8
+          py-4
+          rounded-2xl
+          border
+          border-gray-200
+          bg-gray-50
+          text-center
+          text-3xl
+          tracking-[14px]
+          font-semibold
+          outline-none
+          focus:border-gray-800
+          focus:ring-4
+          focus:ring-gray-100
+          transition-all
+        "
             />
 
+            {/* Verify Button */}
             <button
               onClick={verifyOtp}
               disabled={loading || otp.length !== 6}
-              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl disabled:opacity-50"
+              className="
+          w-full
+          mt-7
+          py-3.5
+          rounded-2xl
+          bg-gray-900
+          hover:bg-black
+          text-white
+          font-semibold
+          shadow-lg
+          hover:shadow-xl
+          transition-all
+          duration-300
+          disabled:opacity-50
+          disabled:cursor-not-allowed
+        "
             >
               {loading ? "Verifying..." : "Verify OTP"}
             </button>
 
-            <button
-              onClick={handleSubmit}
-              className="w-full mt-3 border py-3 rounded-xl hover:bg-gray-100"
-            >
-              Resend OTP
-            </button>
+            {/* Bottom Actions */}
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={handleSubmit}
+                className="
+            flex-1
+            py-3
+            rounded-2xl
+            border
+            border-gray-200
+            bg-white
+            hover:bg-gray-50
+            font-medium
+            text-gray-700
+            transition-all
+          "
+              >
+                Resend
+              </button>
 
-            <button
-              onClick={() => setShowOtpModal(false)}
-              className="w-full mt-3 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl"
-            >
-              Cancel
-            </button>
+              <button
+                onClick={() => setShowOtpModal(false)}
+                className="
+            flex-1
+            py-3
+            rounded-2xl
+            border
+            border-gray-200
+            bg-white
+            hover:bg-gray-50
+            font-medium
+            text-gray-700
+            transition-all
+          "
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

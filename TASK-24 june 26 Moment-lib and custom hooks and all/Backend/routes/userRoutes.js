@@ -25,4 +25,6 @@ router.get("/me", authMiddleware, userController.getMe);
 
 router.patch("/update-profile", authMiddleware, userController.updateProfile);
 
+router.post("/google-login", userController.googleLogin);
+
 module.exports = router;
