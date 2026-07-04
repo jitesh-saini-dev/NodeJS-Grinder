@@ -1,8 +1,10 @@
 const jwt = require("jsonwebtoken");
 const authModel = require("../models/authModel");
 
-const SecretKey =
-  "d1628e12e40915c6cb23658430db9bcc70852795fffe542fa2b4223ee73145f0";
+require("dotenv").config();
+
+const SecretKey = process.env.JWT_SECRET;
+
 
 const auth = async (req, res, next) => {
   try {
@@ -17,7 +19,7 @@ const auth = async (req, res, next) => {
     }
 
     const token = authtoken.split(" ")[1];
-    console.log(">>>>>>>>>token:", token);
+    // console.log(">>>>>>>>>token:", token);
 
     if (!token) {
       return res.status(400).json({

@@ -2,9 +2,9 @@ const taskModel = require("../models/taskModel");
 const authModel = require("../models/authModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const SecretKey =
-  "d1628e12e40915c6cb23658430db9bcc70852795fffe542fa2b4223ee73145f0";
+require("dotenv").config();
 
+const SecretKey = process.env.JWT_SECRET;
 const { sendWelcomeEmail, sendOtpEmail } = require("../utils/userHelper");
 
 const { uploadImage } = require("../utils/cloudinaryFileUpload");
