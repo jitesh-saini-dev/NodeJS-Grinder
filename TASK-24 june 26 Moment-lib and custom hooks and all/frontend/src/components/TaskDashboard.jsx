@@ -241,34 +241,34 @@ const TaskDashboard = () => {
                         <div className="flex flex-wrap items-center justify-center gap-2">
                           <button
                             onClick={() => navigate(`/viewtask/${task._id}`)}
-                            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
+                            // className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
                           >
-                            View
+                            👁️
                           </button>
                           <button
                             onClick={() => navigate(`/edittask/${task._id}`)}
-                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
+                            // className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
                           >
-                            Edit
+                            ✏️
                           </button>
                           <button
                             onClick={() => handleDelete(task._id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
+                            // className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
                           >
-                            Delete
+                            <img src="/close-circle-line.png" alt="" />
                           </button>
                           <button
                             onClick={() => downloadPDF(task._id, task.taskName)}
-                            className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
+                            className="text-2xl  "
                           >
-                            Download
+                            <i class="ri-download-2-fill"></i>
                           </button>
 
                           <button
                             onClick={() => speakTask(task)}
-                            className="bg-orange-500 text-white px-3 py-2 rounded-lg"
+                            // className="bg-orange-500 text-white px-3 py-2 rounded-lg"
                           >
-                            🔊 Listen
+                            🔊
                           </button>
                         </div>
                       </td>

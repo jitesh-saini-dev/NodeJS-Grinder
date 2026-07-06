@@ -238,11 +238,8 @@ const ForgotPassword = () => {
           w-full
           py-3
           rounded-xl
-          bg-gradient-to-r
-          from-blue-600
-          to-indigo-600
-          hover:from-blue-700
-          hover:to-indigo-700
+        bg-gray-900
+          hover:bg-black
           text-white
           font-semibold
           shadow-lg
@@ -250,6 +247,8 @@ const ForgotPassword = () => {
           transition-all
           duration-300
           disabled:opacity-60
+          cursor-pointer
+          hover:scale-[1.02]
         "
             >
               {loading ? "Sending OTP..." : "Send OTP"}
