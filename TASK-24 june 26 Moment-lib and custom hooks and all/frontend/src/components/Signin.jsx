@@ -83,8 +83,6 @@ const Signin = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-blue-50 flex items-center justify-center p-4 font-['Inter']">
       <div className="w-full max-w-[430px] bg-white/90 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.08)] border border-gray-100 p-7">
-    
-
         {/* Header */}
         <div className="text-center mb-7 mt-6">
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
