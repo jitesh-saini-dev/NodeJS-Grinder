@@ -6,6 +6,9 @@ const cloudinary = require("cloudinary").v2;
 
 const app = express();
 
+//cron
+require("./cron/taskReminder");
+
 // Middleware
 app.use(express.json());
 app.use(cors());
